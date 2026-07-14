@@ -1,0 +1,28 @@
+# PyInstaller / Compilation Outputs
+build/
+dist/
+*.spec
+
+# Compiled Binaries (Distribute these via GitHub Releases instead of Git)
+DownloadsOrganizer.app/
+DownloadsOrganizer-Mac
+DownloadsOrganizer.zip
+DownloadsOrganizer.exe
+
+# Python Cache & Environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.venv/
+env/
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# User Application State
+last_run.json
+activity.log
