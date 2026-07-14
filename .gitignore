@@ -25,4 +25,4 @@ Thumbs.db
 
 # User Application State
 last_run.json
-activity.log
+*.log
