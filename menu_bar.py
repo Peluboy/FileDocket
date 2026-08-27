@@ -84,6 +84,7 @@ class FileFlowApp(rumps.App):
         self.launch_login_item = rumps.MenuItem("Launch FileFlow at login", callback=self.toggle_launch_login)
         self.welcome_item = rumps.MenuItem("Welcome Guide", callback=self.show_welcome)
         self.about_item = rumps.MenuItem("About FileFlow", callback=self.show_about)
+        self.support_item = rumps.MenuItem("Support", callback=self.show_support)
         self.get_pro_item = rumps.MenuItem("Pro", callback=self.show_get_pro)
         _set_menu_icon(self.get_pro_item, "icon-pro-crown")
         self.quit_item = rumps.MenuItem("Quit FileFlow", key="q", callback=self.quit_app)
@@ -107,6 +108,7 @@ class FileFlowApp(rumps.App):
             rumps.separator,
             self.welcome_item,
             self.about_item,
+            self.support_item,
             rumps.separator,
             self.quit_item,
         ]
@@ -810,7 +812,8 @@ class FileFlowApp(rumps.App):
     def show_get_pro(self, sender=None):
         """Show the Pro upgrade dialog with license activation."""
         if license_mod.is_pro():
-            key = license_mod.get_license_key()
+            info = license_mod.get_license_info()
+            key = info.get('key', '')
             rumps.alert(
                 title="FileFlow Pro Active",
                 message=f"You are a Pro user!\n\n"
@@ -819,14 +822,15 @@ class FileFlowApp(rumps.App):
             )
             return
 
-        resp = rumps.alert(            title="FileFlow Pro, $8 one-time",
-                    message="Unlock power tools:\n\n"
+        resp = rumps.alert(
+            title="FileFlow Pro, $8 one-time",
+            message="Unlock power tools:\n\n"
                     "  Duplicate Finder: find and clean up duplicates\n"
                     "  Deep Scan: look inside organized folders\n"
                     "  Archive Old Files: auto-move old installers\n"
                     "  Unlimited Rules and Folders\n\n"
                     "Buy a license key at:\n"
-                    f"{license_mod.get_pro_url()}\n\n"
+                    f"{license_mod.get_checkout_url()}\n\n"
                     "Then enter your key below.",
             ok="Enter Key",
             cancel="Not Now"
@@ -840,15 +844,15 @@ class FileFlowApp(rumps.App):
             )
             r = w.run()
             if r.clicked and r.text.strip():
-                ok, msg = license_mod.activate_license(r.text.strip())
-                if ok:
-                    rumps.alert(title="Pro Activated! 🎉", message=msg)
+                result = license_mod.validate_license_key(r.text.strip())
+                if result.get("valid"):
+                    rumps.alert(title="Pro Activated", message="FileFlow Pro is now active on this Mac.")
                     self._build_tools_menu()
                     self.refresh_folders_menu()
                     self.refresh_rules_menu()
-                    self.get_pro_item.title = "Crown Pro Active"
+                    self.get_pro_item.title = "Pro Active"
                 else:
-                    rumps.alert(title="Activation Failed", message=msg)
+                    rumps.alert(title="Activation Failed", message=result.get('error', 'Invalid key.'))
 
     def show_about(self, sender=None):
         pro_status = "Pro" if license_mod.is_pro() else "Free"
@@ -859,6 +863,26 @@ class FileFlowApp(rumps.App):
                     f"License: {pro_status}\n"
                     f"It only ever moves files, never deletes.",
         )
+
+    def show_support(self, sender=None):
+        """Show support info for license issues and help."""
+        resp = rumps.alert(
+            title="Support",
+            message="Having issues with your license key or the app?\n\n"
+                    "Email: imulep2104@gmail.com\n"
+                    "Subject: FileFlow Support\n\n"
+                    "Please include:\n"
+                    "  - Your license key (if applicable)\n"
+                    "  - What you were trying to do\n"
+                    "  - Any error message you saw\n\n"
+                    "We usually reply within 24 hours.",
+            ok="Copy Email",
+            cancel="Close"
+        )
+        if resp == 0:
+            # Copy email to clipboard
+            import subprocess
+            subprocess.run(["pbcopy"], input=b"imulep2104@gmail.com")
 
     def quit_app(self, sender=None):
         """Stop the timer, restore the icon and exit cleanly."""
