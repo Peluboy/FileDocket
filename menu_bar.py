@@ -814,12 +814,32 @@ class FileDocketApp(rumps.App):
         if license_mod.is_pro():
             info = license_mod.get_license_info()
             key = info.get('key', '')
-            rumps.alert(
+            resp = rumps.alert(
                 title="FileDocket Pro Active",
                 message=f"You are a Pro user!\n\n"
                         f"License: {key[:8]}...\n\n"
-                        f"Thank you for supporting FileDocket."
+                        f"Thank you for supporting FileDocket.",
+                ok="OK",
+                cancel="Deactivate"
             )
+            if resp == 0:  # Cancel = Deactivate
+                confirm = rumps.alert(
+                    title="Deactivate Pro?",
+                    message="This will remove Pro from this Mac and free up the activation slot.\n\n"
+                            "You can re-activate later with the same key.",
+                    ok="Deactivate",
+                    cancel="Keep Pro"
+                )
+                if confirm == 0:  # OK = Deactivate
+                    result = license_mod.deactivate_license()
+                    if result.get("deactivated"):
+                        rumps.alert(title="Pro Deactivated",
+                                    message="FileDocket Pro has been removed from this Mac.")
+                        self.get_pro_item.title = "Pro"
+                        self._build_tools_menu()
+                    else:
+                        rumps.alert(title="Deactivation Failed",
+                                    message=result.get("error", "Could not deactivate."))
             return
 
         resp = rumps.alert(
@@ -844,15 +864,25 @@ class FileDocketApp(rumps.App):
             )
             r = w.run()
             if r.clicked and r.text.strip():
-                result = license_mod.validate_license_key(r.text.strip())
-                if result.get("valid"):
-                    rumps.alert(title="Pro Activated", message="FileDocket Pro is now active on this Mac.")
+                key_input = r.text.strip()
+                # Step 1: Validate the key
+                result = license_mod.validate_license_key(key_input)
+                if not result.get("valid"):
+                    rumps.alert(title="Activation Failed", message=result.get('error', 'Invalid key.'))
+                    return
+                # Step 2: Activate (consumes one slot on Lemon Squeezy)
+                act_result = license_mod.activate_license(key_input)
+                if act_result.get("activated"):
+                    rumps.alert(title="Pro Activated",
+                                message="FileDocket Pro is now active on this Mac.\n\n"
+                                        "You can deactivate from the Pro menu to free the slot.")
                     self._build_tools_menu()
                     self.refresh_folders_menu()
                     self.refresh_rules_menu()
                     self.get_pro_item.title = "Pro Active"
                 else:
-                    rumps.alert(title="Activation Failed", message=result.get('error', 'Invalid key.'))
+                    rumps.alert(title="Activation Failed",
+                                message=act_result.get('error', 'Could not activate.'))
 
     def show_about(self, sender=None):
         pro_status = "Pro" if license_mod.is_pro() else "Free"
