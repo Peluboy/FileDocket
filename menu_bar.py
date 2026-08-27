@@ -62,6 +62,68 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+# Menu-bar status icon: 18pt tall, width follows the artwork aspect so the
+# landscape SVG is scaled uniformly (no crop, no stretch). rumps defaults to
+# 20x20 and would otherwise distort the asset after load.
+STATUS_BAR_ICON_HEIGHT_PT = 18.0
+STATUS_BAR_ICON_SVG = "menu-tray-icon.svg"
+STATUS_BAR_ICON_PNG = "status_iconTemplate.png"
+
+
+def _status_bar_icon_path():
+    """Prefer the Template PNG so macOS can tint the glyph black or white.
+
+    `status_iconTemplate.png` (+ @2x) is a black-on-transparent template image.
+    macOS uses the alpha channel as a mask: the icon renders black on a light
+    menu bar and white on a dark one. The SVG remains the artwork source and
+    is used if the PNG is missing.
+    """
+    png = resource_path(STATUS_BAR_ICON_PNG)
+    if os.path.isfile(png):
+        return png
+    return resource_path(STATUS_BAR_ICON_SVG)
+
+
+def _nsimage_for_status_bar(path):
+    """Load a menu-bar glyph as an 18pt-tall template image.
+
+    Black-on-transparent artwork plus setTemplate_(True) lets macOS tint the
+    glyph black on a light menu bar and white on a dark one. Width follows
+    the source aspect ratio so the icon is scaled uniformly (no crop).
+    """
+    from AppKit import NSImage, NSBitmapImageRep
+    if not path or not os.path.isfile(path):
+        return None
+    img = NSImage.alloc().initWithContentsOfFile_(path)
+    if img is None or not img.isValid():
+        return None
+    # initWithContentsOfFile_ does not auto-pair @2x the way imageNamed: does.
+    name, ext = os.path.splitext(os.path.basename(path))
+    if not name.endswith("@2x"):
+        two_x = os.path.join(os.path.dirname(path), f"{name}@2x{ext}")
+        if os.path.isfile(two_x):
+            rep = NSBitmapImageRep.imageRepWithContentsOfFile_(two_x)
+            if rep is not None:
+                sz = img.size()
+                if sz.width > 0 and sz.height > 0:
+                    rep.setSize_(sz)
+                img.addRepresentation_(rep)
+    try:
+        img.setScalesWhenResized_(True)
+    except Exception:
+        pass
+    sz = img.size()
+    height = float(sz.height) if sz.height else 0.0
+    width = float(sz.width) if sz.width else 0.0
+    if height > 0.0:
+        scale = STATUS_BAR_ICON_HEIGHT_PT / height
+        img.setSize_((width * scale, STATUS_BAR_ICON_HEIGHT_PT))
+    else:
+        img.setSize_((STATUS_BAR_ICON_HEIGHT_PT, STATUS_BAR_ICON_HEIGHT_PT))
+    img.setTemplate_(True)
+    return img
+
+
 class FileDocketApp(rumps.App):
     def __init__(self):
         try:
@@ -69,8 +131,11 @@ class FileDocketApp(rumps.App):
                 f.write("FileDocketApp __init__ started\n")
         except Exception as e:
             pass
-        super(FileDocketApp, self).__init__("FileDocket", icon=resource_path("status_iconTemplate.png"), template=True,
-                                          quit_button=None)
+        self._base_icon = _status_bar_icon_path()
+        super(FileDocketApp, self).__init__(
+            "FileDocket", icon=self._base_icon, template=True, quit_button=None)
+        # rumps forces icons to 20x20; replace with the 18pt-tall template image.
+        self._set_tray_icon(self._base_icon)
         
         # Initialize menu items
         self.last_run_item = rumps.MenuItem("Last Run: Checking...", callback=None)
@@ -118,7 +183,6 @@ class FileDocketApp(rumps.App):
         self._anim_timer = None
         self._anim_index = 0
         self._icon_frames = None
-        self._base_icon = resource_path("status_iconTemplate.png")
         # Build the animation frames up-front so the first busy action starts
         # spinning instantly instead of paying the draw cost mid-click.
         try:
@@ -145,6 +209,10 @@ class FileDocketApp(rumps.App):
         # Start a periodic timer to update the last run time text (every 30 seconds)
         self.timer = rumps.Timer(self.periodic_update, 30)
         self.timer.start()
+
+        # Re-apply 18pt template sizing once the NSStatusItem exists (rumps
+        # create it at run() time and otherwise leaves a 20x20 scaled image).
+        self._once(0.05, lambda: self._set_tray_icon(self._base_icon))
 
         # ---- Main-thread UI queue ---------------------------------------
         # Background threads compute results (find_duplicates, classify_by_category,
@@ -538,6 +606,31 @@ class FileDocketApp(rumps.App):
 
     # ---- Tray icon animation -----------------------------------------------
 
+    def _set_tray_icon(self, path):
+        """Apply a uniformly scaled 18pt-tall template icon, bypassing rumps' 20x20."""
+        img = _nsimage_for_status_bar(path)
+        if img is None:
+            png = resource_path(STATUS_BAR_ICON_PNG)
+            if path != png:
+                img = _nsimage_for_status_bar(png)
+        if img is None:
+            return
+        self._icon = path
+        self._icon_nsimage = img
+        try:
+            item = self._nsapp.nsstatusitem
+        except AttributeError:
+            return
+        item.setImage_(img)
+        try:
+            button = item.button()
+            if button is not None:
+                button.setImage_(img)
+                from AppKit import NSImageScaleProportionallyDown
+                button.setImageScaling_(NSImageScaleProportionallyDown)
+        except Exception:
+            pass
+
     def _debug(self, msg):
         """Append to the debug log instead of failing silently."""
         try:
@@ -701,7 +794,7 @@ class FileDocketApp(rumps.App):
                 except Exception:
                     pass
             try:
-                self.icon = self._base_icon
+                self._set_tray_icon(self._base_icon)
                 self.title = ""            # clear the "Working…" title
             except Exception:
                 pass
@@ -721,7 +814,7 @@ class FileDocketApp(rumps.App):
         frames = self._icon_frames or []
         if frames:
             try:
-                self.icon = frames[i % len(frames)]   # rumps wants a path str
+                self._set_tray_icon(frames[i % len(frames)])
             except Exception as e:
                 self._debug(f"icon set failed: {e}")
         self._anim_index += 1
