@@ -5,7 +5,7 @@
 A free, open-source macOS menu bar app that sorts your messy Downloads folder into neat categories, Images, Documents, Audio, Video, Code, and more.
 
 ```
-brew tap peluboy/filedocket && brew install --cask filedocket
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew tap peluboy/tap && brew install --cask --no-quarantine filedocket
 ```
 
 ---
@@ -28,25 +28,34 @@ brew tap peluboy/filedocket && brew install --cask filedocket
 ### Option 1: Homebrew (Recommended)
 
 ```bash
-brew tap peluboy/filedocket
-brew install --cask filedocket
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+brew tap peluboy/tap
+brew install --cask --no-quarantine filedocket
 ```
+
+If you just installed Homebrew, either run the `export PATH=...` line above in the same window, or **open a new Terminal** so `brew` is on PATH. `brew: command not found` means the current session cannot see Homebrew yet. You can also skip Homebrew and use the DMG below.
 
 ### Option 2: Direct Download
 
-1. Download the latest `.dmg` from [Releases](https://github.com/peluboy/FileDocket/releases/latest)
+1. Download the latest `.dmg` from [v1.2.0](https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg)
 2. Open the `.dmg` and drag **FileDocket** to your Applications folder
 3. Launch FileDocket from Applications
 
-### Gatekeeper Warning
+### First launch (Gatekeeper)
 
-Since FileDocket isn't on the Mac App Store, macOS may show a warning:
+FileDocket is not notarized, so a double-click often shows *can't be opened* with no Open Anyway button. That is normal on current macOS.
 
-> *"FileDocket can't be opened because Apple cannot check it for malicious software."*
+**Fix (one-time), in this order:**
 
-**Fix (one-time):** Right-click the app → **Open** → Click **Open** in the dialog.
+1. In **Finder → Applications**, Control-click **FileDocket** → **Open** → **Open**.
+2. If the dialog only has **Done**, click Done, then **System Settings → Privacy & Security**, scroll to the bottom, and click **Open Anyway**. The button only appears after a blocked open.
+3. If Open Anyway still never shows:
 
-Alternatively: **System Settings → Privacy & Security → scroll down → click "Open Anyway"** next to FileDocket.
+```bash
+xattr -cr /Applications/FileDocket.app
+```
+
+Then Control-click → Open again.
 
 ## How It Works
 

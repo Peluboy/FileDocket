@@ -2,435 +2,966 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>FileDocket - Your Downloads, Automatically Organized</title>
-  <meta name="description" content="FileDocket is a free macOS menu bar app that automatically organizes your Downloads folder into neat categories. Never lose a file again.">
-  <meta property="og:title" content="FileDocket - Your Downloads, Automatically Organized">
-  <meta property="og:description" content="A free macOS menu bar app that sorts your Downloads into Images, Documents, Audio, Video, and more.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FileDocket — Organize your Downloads</title>
+  <meta name="description" content="FileDocket is a free macOS menu bar app that sorts your Downloads folder into Images, Documents, Audio, Video, and more. It only moves files. Every move can be undone.">
+  <meta property="og:title" content="FileDocket — Organize your Downloads">
+  <meta property="og:description" content="A free macOS menu bar app that sorts Downloads into Images, Documents, Audio, Video, and more.">
   <meta property="og:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/geist@5.2.5/index.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --surface-2: #1a1a1a;
-      --border: #262626;
-      --text: #fafafa;
-      --text-dim: #a0a0a0;
-      --accent: #3b82f6;
-      --accent-glow: rgba(59, 130, 246, 0.15);
-      --green: #22c55e;
-      --purple: #a855f7;
+      --bg: #000;
+      --fg: #ededed;
+      --muted: #8a8a8a;
+      --line: #222;
+      --line-2: #2e2e2e;
+      --panel: #0a0a0a;
+      --accent: #00a8c4;
+      --radius: 6px;
+      --max: 1080px;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      font-family: "Geist Variable", "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
       background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
+      color: var(--fg);
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+    ::selection { background: var(--accent); color: #000; }
+
+    a { color: inherit; }
+
+    img, svg { display: block; }
+
+    .skip {
+      position: absolute; left: 12px; top: -40px;
+      background: var(--fg); color: #000;
+      padding: 8px 12px; border-radius: var(--radius);
+      z-index: 200; font-size: 13px;
+    }
+    .skip:focus { top: 12px; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 48px));
+      margin: 0 auto;
+    }
 
     /* Nav */
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 100;
-      background: rgba(10,10,10,0.8); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+    header {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg);
     }
-    nav .container {
+    .nav {
       display: flex; align-items: center; justify-content: space-between;
-      height: 56px;
+      height: 52px;
     }
-    nav .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
-    nav .logo span { color: var(--accent); }
-    nav a { color: var(--text-dim); text-decoration: none; font-size: 14px; transition: color 0.2s; }
-    nav a:hover { color: var(--text); }
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; font-weight: 560; font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+    .brand svg { width: 22px; height: 17px; color: var(--accent); }
+    .nav-links {
+      display: flex; align-items: center; gap: 22px;
+      list-style: none;
+      padding: 0;
+    }
+    .nav-links a:not(.btn) {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color 0.3s ease-out;
+    }
+    .nav-links a:not(.btn):hover { color: var(--fg); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 32px; padding: 0 12px;
+      border-radius: var(--radius);
+      font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: background 0.3s ease-out, color 0.3s ease-out, border-color 0.3s ease-out, transform 0.3s ease-out;
+    }
+    .btn-solid {
+      background: var(--fg); color: #000;
+    }
+    .btn-solid:hover { background: #fff; }
+    .btn-ghost {
+      background: transparent; color: var(--fg);
+      border-color: var(--line-2);
+    }
+    .btn-ghost:hover { border-color: #555; }
+    .btn-lg { height: 40px; padding: 0 16px; font-size: 14px; }
+    .btn:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .btn-solid:hover { transform: translateY(-1px); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal.in .cell {
+      animation: rise 0.45s ease-out both;
+    }
+    .reveal.in .cell:nth-child(1) { animation-delay: 0.04s; }
+    .reveal.in .cell:nth-child(2) { animation-delay: 0.1s; }
+    .reveal.in .cell:nth-child(3) { animation-delay: 0.16s; }
+    .reveal.in .cell:nth-child(4) { animation-delay: 0.22s; }
+    .reveal.in .cell:nth-child(5) { animation-delay: 0.28s; }
+    .reveal.in .cell:nth-child(6) { animation-delay: 0.34s; }
+    .hero-copy { animation: rise 0.65s ease-out both; }
+    .hero-frame { animation: rise 0.7s 0.12s ease-out both; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: none; }
+    }
 
     /* Hero */
     .hero {
-      padding: 140px 0 80px;
-      text-align: center;
+      padding: 72px 0 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 44px;
     }
-    .hero-badge {
-      display: inline-block;
-      background: var(--accent-glow);
-      border: 1px solid rgba(59,130,246,0.3);
+    .hero-copy { max-width: 640px; }
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--accent);
-      font-size: 12px; font-weight: 600;
-      padding: 4px 12px; border-radius: 999px;
-      margin-bottom: 24px;
-      letter-spacing: 0.5px; text-transform: uppercase;
-    }
-    .hero h1 {
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
       margin-bottom: 16px;
     }
-    .hero h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 18px; color: var(--text-dim);
-      max-width: 520px; margin: 0 auto 32px;
+    h1 {
+      font-size: clamp(40px, 5.4vw, 64px);
+      font-weight: 560;
+      letter-spacing: -0.045em;
+      line-height: 1.05;
+      margin-bottom: 18px;
     }
-    .hero-cta {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent);
-      color: #fff; font-weight: 600; font-size: 16px;
-      padding: 14px 32px; border-radius: 12px;
-      text-decoration: none;
-      transition: transform 0.15s, box-shadow 0.15s;
+    .lede {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 42ch;
+      margin-bottom: 28px;
     }
-    .hero-cta:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
     }
-    .hero-cta svg { width: 20px; height: 20px; }
-    .hero-sub {
-      margin-top: 12px; font-size: 13px; color: var(--text-dim);
+    .meta span + span::before {
+      content: "·";
+      margin: 0 8px;
+      color: var(--line-2);
     }
-    .hero-sub a { color: var(--accent); text-decoration: underline; }
 
-    /* Screenshot */
-    .screenshot {
-      margin: 40px auto 80px;
-      max-width: 640px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
-    }
-    .screenshot img { width: 100%; display: block; }
-
-    /* Features */
-    .features { padding: 80px 0; }
-    .features h2 {
-      text-align: center; font-size: 32px; font-weight: 700;
-      letter-spacing: -0.5px; margin-bottom: 48px;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: border-color 0.2s;
-    }
-    .feature-card:hover { border-color: var(--accent); }
-    .feature-icon {
-      width: 40px; height: 40px;
-      background: var(--accent-glow);
+    /* Product frame — macOS desktop */
+    .hero-frame { width: 100%; }
+    .frame {
+      border: 1px solid var(--line);
       border-radius: 10px;
+      background: #111;
+      overflow: hidden;
+    }
+    .menubar {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 32px; padding: 0 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(18,18,18,0.55);
+      backdrop-filter: blur(28px) saturate(1.6);
+      -webkit-backdrop-filter: blur(28px) saturate(1.6);
+      font-size: 12px; color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .menubar-left, .menubar-right {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .apple { width: 12px; height: 14px; color: #fff; }
+    .status-glyphs {
+      display: flex; align-items: center; gap: 8px; opacity: 0.85;
+    }
+    .status-glyphs svg { width: 13px; height: 13px; }
+    .tray {
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; margin-bottom: 12px;
+      width: 28px; height: 22px;
+      color: #fff;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.3s ease-out;
     }
-    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-    .feature-card p { font-size: 14px; color: var(--text-dim); }
+    .tray svg { width: 18px; height: 14px; }
+    .tray:hover,
+    .tray[aria-expanded="true"] { background: rgba(255,255,255,0.18); }
+    .tray:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+    .desk {
+      position: relative;
+      height: 620px;
+      background: #0b1220 url("desktop.jpg") center / cover no-repeat;
+    }
+    .finder {
+      position: absolute;
+      left: 28px; top: 36px;
+      z-index: 1;
+      width: min(380px, 46%);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(28,28,30,0.72);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #e8e8e8;
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      pointer-events: none;
+    }
+    .finder-bar {
+      display: flex; align-items: center; gap: 6px;
+      height: 28px; padding: 0 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .tl { width: 8px; height: 8px; border-radius: 50%; }
+    .tl-r { background: #ff5f57; }
+    .tl-y { background: #febc2e; }
+    .tl-g { background: #28c840; }
+    .finder-bar span { margin-left: 8px; color: #c8c8c8; }
+    .finder-body { display: grid; grid-template-columns: 120px 1fr; min-height: 168px; }
+    .finder-side {
+      padding: 10px 8px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      color: #9a9a9a;
+    }
+    .finder-side div { padding: 4px 8px; border-radius: 4px; }
+    .finder-side .on { background: rgba(255,255,255,0.1); color: #fff; }
+    .finder-list { padding: 8px 12px; color: #d0d0d0; }
+    .finder-list div { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .dock {
+      position: absolute;
+      left: 50%; bottom: 14px;
+      z-index: 1;
+      transform: translateX(-50%);
+      display: flex; gap: 8px; align-items: center;
+      padding: 6px 10px;
+      border-radius: 14px;
+      background: rgba(30,30,30,0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+      pointer-events: none;
+    }
+    .dock i {
+      width: 28px; height: 28px; border-radius: 7px;
+      display: block;
+      background: rgba(255,255,255,0.16);
+    }
+    .nudge {
+      position: absolute;
+      top: 18px;
+      right: 292px;
+      z-index: 2;
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(12,12,12,0.5);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      animation: nudge-in 0.5s 0.45s ease-out both;
+      pointer-events: none;
+    }
+    .nudge svg { width: 22px; height: 22px; color: var(--accent); }
+    @keyframes nudge-in {
+      from { opacity: 0; transform: translate(6px, 6px); }
+      to { opacity: 1; transform: none; }
+    }
+    .menu {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      z-index: 3;
+      width: 268px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px;
+      background: rgba(36,36,38,0.52);
+      backdrop-filter: blur(40px) saturate(1.8);
+      -webkit-backdrop-filter: blur(40px) saturate(1.8);
+      padding: 5px 0 4px;
+      font-size: 13px;
+      font-family: -apple-system, BlinkMacSystemFont, "Geist Variable", sans-serif;
+      transform-origin: top right;
+      will-change: transform, opacity;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.32);
+    }
+    .menu.is-open { animation: menu-in 0.32s ease-out both; }
+    .menu[hidden] { display: none; }
+    @keyframes menu-in {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    .mi {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%;
+      padding: 5px 11px;
+      border: 0;
+      background: transparent;
+      color: var(--fg);
+      font: inherit;
+      text-align: left;
+      cursor: default;
+      transition: background 0.2s ease-out;
+    }
+    .mi:hover,
+    .mi.is-hot { background: rgba(255,255,255,0.1); }
+    .mi.dim { color: var(--muted); cursor: default; }
+    .mi.dim:hover { background: transparent; }
+    .mi.indent { padding-left: 28px; }
+    .mi .grow { flex: 1; }
+    .mi .count { color: var(--muted); }
+    .mi .mark,
+    .mi .chev,
+    .mi .crown {
+      width: 12px; height: 12px; flex-shrink: 0; color: var(--fg);
+    }
+    .mi .chev { color: var(--muted); margin-left: auto; }
+    .mi kbd {
+      margin-left: auto;
+      font-family: inherit;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .menu-sep { height: 1px; background: rgba(255,255,255,0.1); margin: 5px 0; }
 
-    /* How it works */
-    .how { padding: 80px 0; }
-    .how h2 {
-      text-align: center; font-size: 32px; font-weight: 700;
-      letter-spacing: -0.5px; margin-bottom: 48px;
+    /* Sections */
+    section { padding: 88px 0; border-top: 1px solid var(--line); }
+    .section-kicker {
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
     }
+    h2 {
+      font-size: clamp(28px, 3.4vw, 40px);
+      font-weight: 560;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .section-lead {
+      color: var(--muted); font-size: 16px;
+      max-width: 52ch; margin-bottom: 40px;
+    }
+
+    /* Feature grid — shared hairlines, no cards */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line);
+    }
+    .cell {
+      padding: 28px 24px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      transition: background 0.3s ease-out;
+    }
+    .cell:hover { background: #0c0c0c; }
+    .cell:nth-child(3n) { border-right: none; }
+    .cell:nth-last-child(-n+3) { border-bottom: none; }
+    .ico {
+      width: 40px; height: 40px;
+      margin-bottom: 18px;
+      color: var(--fg);
+      stroke-width: 1.4;
+      transition: color 0.3s ease-out, transform 0.3s ease-out;
+    }
+    .cell:hover .ico { color: var(--accent); transform: translateY(-2px); }
+    .cell h3 {
+      font-size: 15px; font-weight: 560;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .cell p { font-size: 14px; color: var(--muted); }
+
+    /* Steps */
     .steps {
-      display: flex; gap: 24px; justify-content: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--line);
     }
     .step {
-      flex: 1; min-width: 200px; max-width: 240px;
-      text-align: center;
+      padding: 28px 0;
+      border-right: 1px solid var(--line);
+      padding-right: 28px;
+      margin-right: 28px;
     }
+    .step:last-child { border-right: none; margin-right: 0; padding-right: 0; }
     .step-num {
-      width: 48px; height: 48px;
-      background: var(--accent);
-      color: #fff; font-weight: 700; font-size: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 16px;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
     }
-    .step h3 { font-size: 16px; margin-bottom: 6px; }
-    .step p { font-size: 14px; color: var(--text-dim); }
+    .step h3 { font-size: 16px; font-weight: 560; margin-bottom: 6px; }
+    .step p { font-size: 14px; color: var(--muted); }
 
-    /* Pricing */
-    .pricing { padding: 80px 0; }
-    .pricing h2 {
-      text-align: center; font-size: 32px; font-weight: 700;
-      letter-spacing: -0.5px; margin-bottom: 12px;
+    /* Install */
+    .install {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      border: 1px solid var(--line);
+      padding: 10px 10px 10px 16px;
+      border-radius: var(--radius);
+      margin-top: 32px;
     }
-    .pricing .subtitle {
-      text-align: center; color: var(--text-dim);
-      font-size: 16px; margin-bottom: 48px;
+    .install code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 13px;
+      color: var(--fg);
+      overflow-x: auto;
+      white-space: nowrap;
     }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      max-width: 640px;
-      margin: 0 auto;
+    .copy {
+      flex-shrink: 0;
+      height: 32px; padding: 0 12px;
+      background: transparent; color: var(--fg);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius);
+      font: inherit; font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.3s ease-out;
     }
-    .price-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
+    .copy:hover { border-color: #555; }
+    .copy:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+    .install-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
     }
-    .price-card.featured {
-      border-color: var(--accent);
-      box-shadow: 0 0 40px var(--accent-glow);
+
+    /* Pricing table */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
     }
-    .price-card .label {
-      font-size: 14px; font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
     }
-    .price-card.featured .label { color: var(--accent); }
-    .price-card .price {
-      font-size: 40px; font-weight: 800;
-      letter-spacing: -1px;
-      margin: 8px 0 4px;
+    th {
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted);
     }
-    .price-card .price span { font-size: 16px; font-weight: 400; color: var(--text-dim); }
-    .price-card .desc { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
-    .price-card ul { list-style: none; margin-bottom: 24px; }
-    .price-card li {
-      font-size: 14px; padding: 6px 0;
-      display: flex; align-items: center; gap: 8px;
+    th.plan { color: var(--fg); font-size: 15px; font-weight: 560; }
+    th .price {
+      display: block;
+      font-size: 13px; font-weight: 400;
+      color: var(--muted); margin-top: 2px;
     }
-    .price-card li::before { content: '✓'; color: var(--green); font-weight: 700; }
-    .price-card li.disabled { color: var(--text-dim); }
-    .price-card li.disabled::before { content: '•'; color: var(--border); }
-    .price-btn {
-      display: block; width: 100%; text-align: center;
-      padding: 12px; border-radius: 10px;
-      font-weight: 600; font-size: 15px;
-      text-decoration: none;
-      transition: transform 0.15s;
+    td:not(:first-child), th:not(:first-child) { text-align: center; width: 22%; }
+    .check {
+      display: inline-block; width: 14px; height: 14px;
+      color: var(--accent);
     }
-    .price-btn:hover { transform: translateY(-1px); }
-    .price-btn.primary { background: var(--accent); color: #fff; }
-    .price-btn.secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+    .dash { color: var(--line-2); }
+    .table-cta { padding-top: 20px; border-bottom: none; }
+    .table-cta .btn { min-width: 120px; }
 
     /* FAQ */
-    .faq { padding: 80px 0; }
-    .faq h2 {
-      text-align: center; font-size: 32px; font-weight: 700;
-      letter-spacing: -0.5px; margin-bottom: 48px;
+    details {
+      border-bottom: 1px solid var(--line);
     }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      padding: 20px 0;
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px 0;
+      font-size: 15px;
+      font-weight: 500;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
     }
-    .faq-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-    .faq-item p { font-size: 14px; color: var(--text-dim); }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+";
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 1;
+    }
+    details[open] summary::after { content: "–"; }
+    details p {
+      padding: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 68ch;
+      animation: faq-in 0.3s ease-out;
+    }
+    @keyframes faq-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: none; }
+    }
+    details code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
 
-    /* Footer */
+    /* Close */
+    .close {
+      text-align: left;
+    }
+    .close p { color: var(--muted); margin-bottom: 24px; }
+
     footer {
-      padding: 40px 0;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding: 28px 0 48px;
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      font-size: 13px; color: var(--muted);
     }
-    footer a { color: var(--text-dim); text-decoration: none; }
-    footer a:hover { color: var(--text); }
+    footer nav { display: flex; gap: 18px; }
+    footer a { text-decoration: none; transition: color 0.3s ease-out; }
+    footer a:hover { color: var(--fg); }
 
-    /* CTA section */
-    .final-cta {
-      padding: 80px 0;
-      text-align: center;
+    @media (max-width: 860px) {
+      .hero { padding: 56px 0 40px; }
+      .grid { grid-template-columns: 1fr; }
+      .cell { border-right: none; }
+      .cell:nth-last-child(-n+3) { border-bottom: 1px solid var(--line); }
+      .cell:last-child { border-bottom: none; }
+      .steps { grid-template-columns: 1fr; }
+      .step { border-right: none; margin-right: 0; padding-right: 0; border-bottom: 1px solid var(--line); }
+      .step:last-child { border-bottom: none; }
+      .nav-links a:not(.btn) { display: none; }
+      .install { flex-direction: column; align-items: stretch; }
+      .desk { height: 580px; }
+      .finder { display: none; }
+      .nudge { display: none; }
+      .menu { right: 8px; }
     }
-    .final-cta h2 {
-      font-size: 36px; font-weight: 800;
-      letter-spacing: -1px; margin-bottom: 12px;
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+      .reveal { opacity: 1; transform: none; }
+      .hero-copy, .hero-frame { animation: none; }
     }
-    .final-cta p { color: var(--text-dim); margin-bottom: 32px; font-size: 16px; }
   </style>
 </head>
 <body>
+  <a class="skip" href="#main">Skip to content</a>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo" viewBox="0 0 764.84 584.85">
+      <path fill="currentColor" d="M639.17,530.82c-14.7,31.42-47.75,53.97-82.94,53.97l-467.06.05c-11.79,0-22.34-3.31-32.2-8.87-22.72-12.81-32.44-41.26-20.41-65.41L179.51,223.57c5.69-11.42,11.81-21.72,21.23-30.04,10.48-9.26,23.35-16.69,38.11-16.69l247.43-.05c7.23,0,13.8,2.87,17.53,8.53l9.11,13.81c5.33,8.09,12.48,13.38,22.76,13.39l190.49.23c13.19.02,24.9,7.92,31,17.01,7.57,11.27,10.34,25.84,4.59,38.21l-66.9,143.74-55.7,119.08ZM371.7,529.21l48.4-48.44,51.31-51.59c10.57-10.63,13.03-26.32,3.19-38.33-8.33-10.17-26.33-15.06-37.05-4.37l-49.9,49.76-.16-160.54c-.01-11.74-9.99-21.45-20.68-23.09l-18.43-.45c-11.09-.27-23.44,8.83-23.48,21.59l-.39,162.82-48.67-48.27c-10.16-10.07-26.15-9.73-36.38-.25-11.72,10.78-12.11,28.26-.87,39.56l99.97,100.54c8.9,8.95,24.33,9.89,33.14,1.07Z"/>
+      <path fill="currentColor" d="M499.93,153.68l-276.12-.29c-25.23,2.73-45.68,17.83-57.2,40.24l-64.97,130.66L30.15,475.41c-1.38,2.92-3.12,4.95-5.65,4.69s-5.66-3.98-4.93-6.88l9-35.41,36.46-136.21,44.18-163.89c5.97-22.14,29.05-40.94,52.61-40.94l468.46-.08c19.14,0,35.32,13.38,42.57,28.47,8.63,17.96,6.45,38.83-6.08,53.48-7.21,8.43-17.12,14.71-28.32,14.74l-89.88.17c-7.85.01-13.89-3.7-17.88-10.16l-8.94-14.46c-3.94-6.38-12.19-15.25-21.82-15.26Z"/>
+      <path fill="currentColor" d="M107.55,91.7c-11.11,9.86-17.31,22.12-20.82,36.01L13.95,415.16c-.46,1.83-1.66,3.68-2.6,4.39-1.1.84-4.56.95-5.81.28C2.38,418.13,0,415.03,0,410.9L.43,71.99C.49,29.91,37.23-.11,77.61,0l190.04.52c15.48.04,29.33,7.7,40.03,18.28l44.17,43.68c1.3,1.29,2.15,4.84,1.72,6.33s-3.1,3.76-5.22,3.76l-196.26.53c-16.7.04-32.43,7.87-44.53,18.6Z"/>
+    </symbol>
+  </svg>
 
-<nav>
-  <div class="container">
-    <div class="logo">⬇ File<span>Flow</span></div>
-    <div style="display: flex; gap: 24px;">
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="https://github.com/peluboy/FileDocket">GitHub</a>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#">
+        <svg viewBox="0 0 764.84 584.85" aria-hidden="true"><use href="#logo"/></svg>
+        FileDocket
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://github.com/peluboy/FileDocket">GitHub</a></li>
+        <li><a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download</a></li>
+      </ul>
     </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap hero">
+      <div class="hero-copy">
+        <p class="eyebrow">macOS menu bar</p>
+        <h1>Organize your Downloads.</h1>
+        <p class="lede">FileDocket sits in the menu bar and sorts files into Images, Documents, Audio, Video, and the rest. It only moves files. Every move can be undone.</p>
+        <div class="cta-row">
+          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download for macOS</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/peluboy/FileDocket">View source</a>
+        </div>
+        <p class="meta"><span>macOS 12+</span><span>3 MB</span><span>No account</span></p>
+      </div>
+
+      <div class="frame hero-frame">
+        <div class="menubar">
+          <div class="menubar-left">
+            <svg class="apple" viewBox="0 0 17 17" aria-hidden="true"><path fill="currentColor" d="M11.4 9c0-2.4 2-3.6 2.1-3.6-1.2-1.7-3-1.9-3.6-1.9-1.5-.2-3 .9-3.7.9s-2-.9-3.3-.9C1.3 3.5-.2 4.8.6 7.4c.8 2.6 2.3 5.7 4.1 5.7 1 0 1.7-.7 3.2-.7s2 .7 3.3.7c1.4 0 2.2-2.6 3-5.1-2-.8-2.8-2.3-2.8-2zM9.3 2.2c.6-.7 1-1.7.9-2.7-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.7-.9 2.6 1.1.1 2.1-.6 2.7-1.4z"/></svg>
+            <span>Finder</span>
+            <span>File</span>
+            <span>Edit</span>
+          </div>
+          <div class="menubar-right">
+            <span class="status-glyphs" aria-hidden="true">
+              <svg viewBox="0 0 16 16"><path fill="currentColor" d="M1 11.2 4.2 8A6.5 6.5 0 0 1 8 6.7 6.5 6.5 0 0 1 11.8 8L15 11.2l-1 1-3.2-3.2A5 5 0 0 0 8 8a5 5 0 0 0-2.8 1L2 12.2l-1-1zM8 13.5a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4z"/></svg>
+              <svg viewBox="0 0 16 16"><path fill="currentColor" d="M2 4h12v2H2zm0 3h12v2H2zm0 3h8v2H2z"/></svg>
+            </span>
+            <button class="tray" type="button" id="tray-btn" aria-expanded="true" aria-controls="app-menu" title="FileDocket">
+              <svg viewBox="0 0 764.84 584.85" aria-hidden="true"><use href="#logo"/></svg>
+            </button>
+            <span>Tue 10:15</span>
+          </div>
+        </div>
+        <div class="desk">
+          <div class="finder" aria-hidden="true">
+            <div class="finder-bar">
+              <i class="tl tl-r"></i><i class="tl tl-y"></i><i class="tl tl-g"></i>
+              <span>Downloads</span>
+            </div>
+            <div class="finder-body">
+              <div class="finder-side">
+                <div>Recents</div>
+                <div class="on">Downloads</div>
+                <div>Desktop</div>
+              </div>
+              <div class="finder-list">
+                <div>IMG_2048.png</div>
+                <div>invoice-march.pdf</div>
+                <div>demo.mov</div>
+                <div>archive.zip</div>
+                <div>Installer.dmg</div>
+              </div>
+            </div>
+          </div>
+          <div class="nudge">
+            Lives in the menu bar
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M9 6h9v9"/></svg>
+          </div>
+          <div class="menu is-open" id="app-menu" role="menu">
+            <div class="mi dim" role="menuitem" aria-disabled="true">Last Run: 27m ago (0 moved)</div>
+            <div class="menu-sep"></div>
+            <button class="mi is-hot" type="button" role="menuitem">Organize Now</button>
+            <button class="mi" type="button" role="menuitem">
+              <svg class="mark" viewBox="0 0 12 12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2 6.2 4.8 9 10 3.4"/></svg>
+              <span class="grow">Auto-Organize in Background</span>
+            </button>
+            <button class="mi indent" type="button" role="menuitem">
+              <svg class="mark" viewBox="0 0 12 12" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M3 4h5.5M8.5 4 7 2.6M8.5 4 7 5.4M3 4v5h6"/></svg>
+              <span class="grow">Undo Last Move</span>
+            </button>
+            <button class="mi" type="button" role="menuitem"><span class="grow">Undo History</span><svg class="chev" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M4.5 2.5 8 6 4.5 9.5"/></svg></button>
+            <button class="mi" type="button" role="menuitem"><span class="grow">Tools</span><svg class="chev" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M4.5 2.5 8 6 4.5 9.5"/></svg></button>
+            <button class="mi" type="button" role="menuitem"><span class="grow">Add Folders <span class="count">(1)</span></span><svg class="chev" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M4.5 2.5 8 6 4.5 9.5"/></svg></button>
+            <button class="mi" type="button" role="menuitem"><span class="grow">Rules <span class="count">(0)</span></span><svg class="chev" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M4.5 2.5 8 6 4.5 9.5"/></svg></button>
+            <div class="menu-sep"></div>
+            <button class="mi" type="button" role="menuitem">Launch FileDocket at login</button>
+            <button class="mi" type="button" role="menuitem">View Activity Log</button>
+            <button class="mi" type="button" role="menuitem">
+              <svg class="crown" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M1.5 9.2h9L9.8 4.6 7.4 6.4 6 3.2 4.6 6.4 2.2 4.6 1.5 9.2zM2 10h8v.8H2z"/></svg>
+              <span class="grow">Pro</span>
+            </button>
+            <div class="menu-sep"></div>
+            <button class="mi" type="button" role="menuitem">Welcome Guide</button>
+            <button class="mi" type="button" role="menuitem">About FileDocket</button>
+            <button class="mi" type="button" role="menuitem">Support</button>
+            <div class="menu-sep"></div>
+            <button class="mi" type="button" role="menuitem"><span class="grow">Quit FileDocket</span><kbd>⌘Q</kbd></button>
+          </div>
+          <div class="dock" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+
+    <section id="features" class="reveal">
+      <div class="wrap">
+        <p class="section-kicker">Product</p>
+        <h2>Sort files. Keep them.</h2>
+        <p class="section-lead">Categories for Images, Documents, Audio, Video, Archives, Code, Fonts, and Installers. Custom rules if you want them.</p>
+        <div class="grid">
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h7l2 2h9v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7z"/><path d="M8 13h8M8 16h5"/></svg>
+            <h3>Auto-categorize</h3>
+            <p>One click, or leave Auto-Organize on and new downloads land in the right folder on their own.</p>
+          </div>
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 5v5h5"/></svg>
+            <h3>Always undoable</h3>
+            <p>Every move is logged. Put a file back where it was, or browse history.</p>
+          </div>
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <h3>Background, not a daemon</h3>
+            <p>Auto-Organize uses launchd. Nothing sits in RAM waiting for the next file.</p>
+          </div>
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/></svg>
+            <h3>Custom rules</h3>
+            <p>Match a name or an extension. Send invoices to Finance, ISOs to a disk folder.</p>
+          </div>
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 20 7v6c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V7z"/><path d="m8.5 12 2.5 2.5L16 10"/></svg>
+            <h3>Never deletes</h3>
+            <p>FileDocket moves files. It does not trash them, upload them, or read their contents off-device.</p>
+          </div>
+          <div class="cell">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h6l2 2h10v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8z"/><path d="M12 13v4M10 15h4"/></svg>
+            <h3>More than Downloads</h3>
+            <p>Add Desktop or any other folder. Free includes one extra. Pro has no cap.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="reveal">
+      <div class="wrap">
+        <p class="section-kicker">Setup</p>
+        <h2>Three steps.</h2>
+        <p class="section-lead">Install, click Organize Now, check the folders. Gatekeeper asks you to Open once on first launch.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h3>Install</h3>
+            <p>Download the DMG, or install with Homebrew. Drag FileDocket into Applications.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <h3>Open the menu</h3>
+            <p>Click the FileDocket icon in the menu bar, then Organize Now.</p>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <h3>Done</h3>
+            <p>Files are sorted. The menu shows what moved. Undo if you need to.</p>
+          </div>
+        </div>
+        <div class="install">
+          <code id="brew-cmd">export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" &amp;&amp; brew tap peluboy/tap &amp;&amp; brew install --cask --no-quarantine filedocket</code>
+          <button class="copy" type="button" data-copy="export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH && brew tap peluboy/tap && brew install --cask --no-quarantine filedocket">Copy</button>
+        </div>
+        <p class="install-hint">Just installed Homebrew? Use this as-is, or open a new Terminal window first. No Homebrew? <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download the DMG</a>.</p>
+      </div>
+    </section>
+
+    <section id="pricing" class="reveal">
+      <div class="wrap">
+        <p class="section-kicker">Pricing</p>
+        <h2>Free core. Pro is $8 once.</h2>
+        <p class="section-lead">The organizer, background sorting, and undo are free. Pro unlocks the rest. No subscription.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th class="plan">Free<span class="price">$0</span></th>
+                <th class="plan">Pro<span class="price">$8 one-time</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Organize Downloads</td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr>
+                <td>Auto-Organize</td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr>
+                <td>Undo and history</td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr>
+                <td>Custom rules</td>
+                <td>3</td>
+                <td>Unlimited</td>
+              </tr>
+              <tr>
+                <td>Extra folders</td>
+                <td>1</td>
+                <td>Unlimited</td>
+              </tr>
+              <tr>
+                <td>Duplicate Finder</td>
+                <td><span class="dash" aria-label="No">—</span></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr>
+                <td>Deep Scan</td>
+                <td><span class="dash" aria-label="No">—</span></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr>
+                <td>Archive old files</td>
+                <td><span class="dash" aria-label="No">—</span></td>
+                <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
+              </tr>
+              <tr class="table-cta">
+                <td></td>
+                <td><a class="btn btn-ghost" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download</a></td>
+                <td><a class="btn btn-solid" href="https://peluboy.lemonsqueezy.com">Get Pro</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="reveal">
+      <div class="wrap">
+        <p class="section-kicker">FAQ</p>
+        <h2>Questions.</h2>
+        <p class="section-lead">The short version: it moves files on your Mac, the code is public, and first launch needs a right-click.</p>
+
+        <details>
+          <summary>Is FileDocket safe?</summary>
+          <p>It only moves files. It does not delete them. Every move is logged and can be undone. The source is on GitHub.</p>
+        </details>
+        <details>
+          <summary>What about the unidentified developer warning?</summary>
+          <p>Do not double-click. In Finder, Control-click FileDocket, choose Open, then Open again. If the dialog only has Done, click Done, then System Settings → Privacy &amp; Security, scroll to the bottom, and click Open Anyway. That button only appears after a blocked open. If it never shows, run <code>xattr -cr /Applications/FileDocket.app</code> and Control-click Open again.</p>
+        </details>
+        <details>
+          <summary>Which folders does it organize?</summary>
+          <p>Downloads by default. You can add more in the app. Free includes one extra folder. Pro has no limit.</p>
+        </details>
+        <details>
+          <summary>Can I install with Homebrew?</summary>
+          <p>Yes. After Homebrew is on PATH: <code>brew tap peluboy/tap && brew install --cask --no-quarantine filedocket</code>. If you just installed Homebrew in this window, prepend <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" &&</code> or open a new Terminal.</p>
+        </details>
+        <details>
+          <summary>It says brew: command not found</summary>
+          <p>Homebrew is installed, but this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel), then the install command. You can also skip Homebrew and <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">download the DMG</a>.</p>
+        </details>
+        <details>
+          <summary>Does anything leave my Mac?</summary>
+          <p>No analytics, no accounts for the free app. Organizing runs locally. Pro checkout goes through Lemon Squeezy.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="close reveal">
+      <div class="wrap">
+        <h2>Start with Downloads.</h2>
+        <p>Free, open source, about ten seconds to install.</p>
+        <div class="cta-row">
+          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download for macOS</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/peluboy/FileDocket">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="wrap">
+    <footer>
+      <p>FileDocket · MIT · <a href="https://github.com/peluboy">Peluboy</a></p>
+      <nav>
+        <a href="https://github.com/peluboy/FileDocket">Source</a>
+        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Releases</a>
+        <a href="mailto:imulep2104@gmail.com">Support</a>
+      </nav>
+    </footer>
   </div>
-</nav>
 
-<section class="hero">
-  <div class="container">
-    <div class="hero-badge">Free &amp; Open Source</div>
-    <h1>Your Downloads,<br><span>Automatically</span> Organized</h1>
-    <p>A tiny macOS menu bar app that sorts your messy Downloads into neat categories: Images, Documents, Audio, Video, and more.</p>
-    <a href="https://github.com/peluboy/FileDocket/releases/latest" class="hero-cta">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download Free
-    </a>
-    <div class="hero-sub">macOS 12+ · 3 MB · No account required</div>
-  </div>
-</section>
+  <script>
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-<section class="screenshot">
-  <div class="container">
-    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center;">
-      <div style="font-size: 48px; margin-bottom: 16px;">⬇️</div>
-      <p style="color: var(--text-dim); font-size: 14px;">Menu bar icon lives in your menu bar, always one click away</p>
-    </div>
-  </div>
-</section>
+      var copyBtn = document.querySelector(".copy");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+          var text = copyBtn.getAttribute("data-copy") || "";
+          if (!navigator.clipboard) return;
+          navigator.clipboard.writeText(text).then(function () {
+            var prev = copyBtn.textContent;
+            copyBtn.textContent = "Copied";
+            setTimeout(function () { copyBtn.textContent = prev; }, 1400);
+          });
+        });
+      }
 
-<section class="features" id="features">
-  <div class="container">
-    <h2>Simple, Safe, Smart</h2>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">🗂</div>
-        <h3>Auto-Categorize</h3>
-        <p>Files sorted into Images, Documents, Audio, Video, Archives, Code, Fonts, and more.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">↩️</div>
-        <h3>Always Undoable</h3>
-        <p>Every move is recorded. One click to undo any file back to its original location.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⚙️</div>
-        <h3>Runs in Background</h3>
-        <p>Enable Auto-Organize and new downloads are sorted automatically, no clicking needed.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <h3>Custom Rules</h3>
-        <p>Define your own rules: "anything with 'invoice' in the name → Finance folder."</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Never Deletes</h3>
-        <p>FileDocket only moves files, never deletes. Your data is always safe.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📂</div>
-        <h3>Multiple Folders</h3>
-        <p>Organize Downloads plus any extra folders you choose (Desktop, etc.).</p>
-      </div>
-    </div>
-  </div>
-</section>
+      var tray = document.getElementById("tray-btn");
+      var menu = document.getElementById("app-menu");
+      if (tray && menu) {
+        tray.addEventListener("click", function () {
+          var open = tray.getAttribute("aria-expanded") === "true";
+          tray.setAttribute("aria-expanded", open ? "false" : "true");
+          if (open) {
+            menu.hidden = true;
+            menu.classList.remove("is-open");
+          } else {
+            menu.hidden = false;
+            menu.classList.add("is-open");
+          }
+        });
+      }
 
-<section class="how">
-  <div class="container">
-    <h2>How It Works</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Install</h3>
-        <p>Download the .app or install via Homebrew. Drag to Applications.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Click</h3>
-        <p>Click the ⬇ icon in your menu bar, then "Organize Now."</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Done</h3>
-        <p>Your files are sorted. See a summary of what moved where.</p>
-      </div>
-    </div>
-  </div>
-</section>
+      var items = menu ? Array.prototype.slice.call(menu.querySelectorAll(".mi:not(.dim)")) : [];
+      var hot = 0;
+      var paused = false;
+      function setHot(i) {
+        items.forEach(function (el, idx) {
+          el.classList.toggle("is-hot", idx === i);
+        });
+      }
+      items.forEach(function (el, idx) {
+        el.addEventListener("pointerenter", function () {
+          paused = true;
+          setHot(idx);
+        });
+        el.addEventListener("pointerleave", function () { paused = false; });
+      });
+      if (menu) {
+        menu.addEventListener("pointerleave", function () { paused = false; });
+      }
+      if (!reduce && items.length) {
+        setInterval(function () {
+          if (paused || (tray && tray.getAttribute("aria-expanded") !== "true")) return;
+          hot = (hot + 1) % items.length;
+          setHot(hot);
+        }, 2200);
+      }
 
-<section class="pricing" id="pricing">
-  <div class="container">
-    <h2>Free Core, Pro Power</h2>
-    <p class="subtitle">Start free. Upgrade when you want the extras.</p>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="label">Free</div>
-        <div class="price">$0 <span>forever</span></div>
-        <div class="desc">Everything you need to stay organized.</div>
-        <ul>
-          <li>Organize Downloads</li>
-          <li>Auto-Organize (background)</li>
-          <li>Undo &amp; History</li>
-          <li>3 Custom Rules</li>
-          <li class="disabled">Duplicate Finder</li>
-          <li class="disabled">Deep Scan</li>
-          <li class="disabled">Unlimited Rules &amp; Folders</li>
-        </ul>
-        <a href="https://github.com/peluboy/FileDocket/releases/latest" class="price-btn secondary">Download Free</a>
-      </div>        <div class="price-card featured">
-        <div class="label">Pro</div>
-        <div class="price">$8 <span>one-time</span></div>
-        <div class="desc">Power tools for power users.</div>
-        <ul>
-          <li>Everything in Free</li>
-          <li>Duplicate Finder</li>
-          <li>Deep Scan (inside folders)</li>
-          <li>Archive Old Files</li>
-          <li>Unlimited Custom Rules</li>
-          <li>Unlimited Extra Folders</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="#buy" class="price-btn primary">Get Pro - $8</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="faq">
-  <div class="container">
-    <h2>FAQ</h2>
-    <div class="faq-item">
-      <h3>Is FileDocket safe?</h3>
-      <p>Yes. FileDocket only moves files, it never deletes anything. Every move is logged and undoable. The code is open source.</p>
-    </div>
-    <div class="faq-item">
-      <h3>What about the "unidentified developer" warning?</h3>
-      <p>Since we're a small indie app (not on the Mac App Store), macOS shows a Gatekeeper warning on first launch. Just right-click the app → Open → click "Open." You only do this once.</p>
-    </div>
-    <div class="faq-item">
-      <h3>What folders does it organize?</h3>
-      <p>Downloads by default. You can add extra folders in the app (Pro: unlimited, Free: 1 extra folder).</p>
-    </div>
-    <div class="faq-item">
-      <h3>Can I install via Homebrew?</h3>
-      <p>Yes! <code style="background:var(--surface-2);padding:2px 6px;border-radius:4px;">brew tap peluboy/homebrew-tap && brew install --cask filedocket</code></p>
-    </div>
-    <div class="faq-item">
-      <h3>What's the difference between Free and Pro?</h3>
-      <p>Free includes the core organizer, auto-organize, undo, and 3 custom rules. Pro adds the Duplicate Finder, Deep Scan, unlimited rules/folders, and archive old files for a one-time $8 payment.</p>
-    </div>
-  </div>
-</section>
-
-<section class="final-cta">
-  <div class="container">
-    <h2>Clean up your Downloads</h2>
-    <p>Free, open source, and takes 10 seconds to install.</p>
-    <a href="https://github.com/peluboy/FileDocket/releases/latest" class="hero-cta">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download FileDocket
-    </a>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <p>Made with ♥ by <a href="https://github.com/peluboy">Peluboy</a> · <a href="https://github.com/peluboy/FileDocket">Source Code</a> · MIT License</p>
-  </div>
-</footer>
-
+      if (!reduce && "IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+      } else {
+        document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+      }
+    })();
+  </script>
 </body>
 </html>
