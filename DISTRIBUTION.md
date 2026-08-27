@@ -1,6 +1,6 @@
 # Distribution & Signing Guide (for you, the developer)
 
-This explains how to hand the FileFlow to other people cleanly. It's separate from
+This explains how to hand FileDocket to other people cleanly. It's separate from
 `README.md`, which is written for the *end users* who receive it.
 
 ## TL;DR — what to share with users
@@ -11,18 +11,15 @@ these **one-click installers** instead (they embed their own Python runtime, so 
 
 | Platform | File to share | Build command |
 |---|---|---|
-| macOS | `dist/FileFlow.dmg` | `./build_macos_release.sh` |
-| Windows | `Output\FileFlow-Setup.exe` | `build_windows_release.bat` |
+| macOS | `dist/FileDocket.dmg` | `./build_macos_release.sh` |
 
 Key points:
 
 - **No Python needed to run.** The built artifacts ship their own Python. Python is only required
   on *your* build machine — never on the user's.
 - **The macOS `.app` is fully self-contained.** Auto-Organize uses a CLI binary embedded *inside*
-  the bundle, so the app works alone in `/Applications` (no companion `FileFlow-Mac` file
+  the bundle, so the app works alone in `/Applications` (no companion `FileDocket-Mac` file
   required).
-- The only reason someone currently "needs Python" is that they were given the *dev source folder*.
-  Shipping installers instead of source fixes that.
 
 The rest of this document explains the build tooling in detail, including macOS signing / notarization
 (the one step that costs money if you want zero Gatekeeper warnings).
@@ -50,7 +47,7 @@ You can distribute the ad-hoc binary as-is; recipients just need one of these th
 - **Right-click the file ▸ Open ▸ Open** (the README already walks users through this), or
 - Strip the quarantine flag before running:
   ```bash
-  xattr -d com.apple.quarantine FileFlow-Mac
+  xattr -d com.apple.quarantine FileDocket-Mac
   ```
 
 This is fine for friends/colleagues. It is not appropriate for wide/public distribution.
@@ -83,8 +80,8 @@ A **bare binary can't be stapled** (stapling attaches the notarization ticket to
 Notarization still works — Gatekeeper verifies online on first launch. For offline-proof approval
 (and a nicer install), wrap the binary in a container and staple that:
 
-- **.dmg**: `hdiutil create -volname "FileFlow" -srcfolder <folder> -ov -format UDZO FileFlow.dmg`
-  then `codesign` + notarize + `xcrun stapler staple FileFlow.dmg`
+- **.dmg**: `hdiutil create -volname "FileDocket" -srcfolder <folder> -ov -format UDZO FileDocket.dmg`
+  then `codesign` + notarize + `xcrun stapler staple FileDocket.dmg`
 - **.pkg** (installer that can also set up the background agent): `pkgbuild` / `productbuild`,
   then notarize + `xcrun stapler staple`.
 

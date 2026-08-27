@@ -30,7 +30,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-BINARY="FileFlow-Mac"
+BINARY="FileDocket-Mac"
 IDENTITY="${SIGN_IDENTITY:-Developer ID Application}"
 NOTARY_PROFILE="${NOTARY_PROFILE:-AC_NOTARY}"
 
@@ -49,7 +49,7 @@ codesign --verify --strict --verbose=2 "$BINARY"
 echo "   ✓ signature valid"
 
 echo "🗜  Packaging for notarization…"
-ZIP="FileFlow-Mac-notarize.zip"
+ZIP="FileDocket-Mac-notarize.zip"
 rm -f "$ZIP"
 /usr/bin/ditto -c -k --keepParent "$BINARY" "$ZIP"
 

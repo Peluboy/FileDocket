@@ -44,9 +44,9 @@ DO_SIGN=0
 [[ "${1:-}" == "--notarize" ]] && DO_SIGN=1
 
 echo "▸ Building embedded CLI (one-file binary)…"
-rm -f dist/fileflow-cli
-python3 -m PyInstaller --onefile --name fileflow-cli --target-arch "$TARGET_ARCH" organize_downloads.py >/dev/null
-test -f dist/fileflow-cli || { echo "❌ CLI build failed"; exit 1; }
+rm -f dist/filedocket-cli
+python3 -m PyInstaller --onefile --name filedocket-cli --target-arch "$TARGET_ARCH" organize_downloads.py >/dev/null
+test -f dist/filedocket-cli || { echo "❌ CLI build failed"; exit 1; }
 
 echo "▸ Building the .app bundle (self-contained)…"
 # Clean old build outputs so we never bake stale files in.
@@ -57,7 +57,7 @@ APP="dist/FileDocket.app"
 test -d "$APP" || { echo "❌ .app build failed"; exit 1; }
 
 # Basic sanity: make sure the CLI actually made it inside the bundle.
-if ! find "$APP" -name "fileflow-cli" | grep -q .; then
+if ! find "$APP" -name "filedocket-cli" | grep -q .; then
   echo "❌ embedded CLI not found inside the .app — auto-organize won't work."; exit 1
 fi
 

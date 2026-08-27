@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FileFlow — safe file organizer
+FileDocket — safe file organizer
 
 Sorts loose files into flat, type-based folders:
   Images, Documents, Videos, Audio, Archives, Installers, Code, Design, Fonts, Other
@@ -232,7 +232,7 @@ def iter_candidates(root: Path, deep: bool = False):
     never entered, exactly like organizing itself.
 
     Deep: every file below root (so already-grouped folders get checked too),
-    EXCEPT hidden files, in-progress downloads, and FileFlow's own bookkeeping
+    EXCEPT hidden files, in-progress downloads, and FileDocket's own bookkeeping
     folders (_Duplicates, _Old_*) so already-handled copies aren't reported twice.
     """
     if not root.is_dir():
@@ -301,7 +301,7 @@ def move_duplicates(roots: List[Path], dry_run: bool, deep: bool = False) -> dic
     """Move duplicate copies (all but the first) into <root>/_Duplicates.
 
     Uses unique_destination so nothing is ever overwritten, and records history
-    so the moves can be undone like any other FileFlow move.
+    so the moves can be undone like any other FileDocket move.
     Pass deep=True to include duplicates hiding inside grouped folders.
     """
     stats = {"moved": 0, "groups": 0, "bytes": 0}
@@ -341,7 +341,7 @@ def biggest_files(roots: List[Path], n: int = 20, deep: bool = False) -> List[di
     """The n largest files across roots, with category + path.
 
     Shallow: loose top-level files only. Deep: everything below root
-    (excluding FileFlow bookkeeping folders).
+    (excluding FileDocket bookkeeping folders).
     """
     items = []
     for root in roots:
@@ -571,7 +571,7 @@ def _apply(root: Path, moves, dry_run: bool, stats: dict):
 
 
 def main(args_list: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="FileFlow — safely organize loose files by type.")
+    ap = argparse.ArgumentParser(description="FileDocket — safely organize loose files by type.")
     ap.add_argument("--dry-run", action="store_true", help="Preview without moving.")
     ap.add_argument("--path", action="append", help="Root(s) to act on (repeatable).")
     ap.add_argument("--duplicates", action="store_true",
@@ -586,7 +586,7 @@ def main(args_list: Optional[List[str]] = None) -> int:
                     help="Move Installers/Archives older than DAYS days into _Old_*.")
     ap.add_argument("--deep", action="store_true",
                     help="Include files inside grouped folders (duplicates, "
-                         "biggest, space). Skips FileFlow bookkeeping folders.")
+                         "biggest, space). Skips FileDocket bookkeeping folders.")
     args = ap.parse_args(args_list)
 
     roots = resolve_roots(args.path)
