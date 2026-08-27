@@ -5,7 +5,7 @@
 A free, open-source macOS menu bar app that sorts your messy Downloads folder into neat categories, Images, Documents, Audio, Video, Code, and more.
 
 ```
-export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew tap peluboy/tap && brew install --cask filedocket
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket
 ```
 
 ---
@@ -29,8 +29,14 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew tap peluboy/tap && 
 
 ```bash
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-brew tap peluboy/tap
-brew install --cask filedocket
+brew install --cask peluboy/tap/filedocket
+```
+
+Use the fully-qualified name (`peluboy/tap/filedocket`). Homebrew 6 will not load a third-party tap until that cask is trusted; installing it this way does that. If you already ran `brew tap peluboy/filedocket`, remove the duplicate first:
+
+```bash
+brew untap peluboy/filedocket
+brew install --cask peluboy/tap/filedocket
 ```
 
 If you just installed Homebrew, either run the `export PATH=...` line above in the same window, or **open a new Terminal** so `brew` is on PATH. `brew: command not found` means the current session cannot see Homebrew yet. You can also skip Homebrew and use the DMG below.
