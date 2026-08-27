@@ -31,7 +31,7 @@ def _set_menu_icon(menu_item, icon_name):
         from AppKit import NSImage as _NSImage
         img = _NSImage.alloc().initWithContentsOfFile_(path)
         if img:
-            img.setTemplate_(True)  # auto white/dark based on menu background
+            img.setTemplate_(False)  # use white icon as-is, don't let macOS recolor
             # Try the direct NSMenuItem setter first
             if hasattr(menu_item, '_menuitem') and menu_item._menuitem is not None:
                 menu_item._menuitem.setImage_(img)
@@ -69,7 +69,7 @@ class FileDocketApp(rumps.App):
                 f.write("FileDocketApp __init__ started\n")
         except Exception as e:
             pass
-        super(FileDocketApp, self).__init__("FileDocket", icon=resource_path("status_iconTemplate.png"), template=True,
+        super(FileDocketApp, self).__init__("FileDocket", icon=resource_path("status_iconTemplate.png"), template=False,
                                           quit_button=None)
         
         # Initialize menu items
@@ -622,7 +622,7 @@ class FileDocketApp(rumps.App):
         finally:
             img.unlockFocus()
         try:
-            img.setTemplate_(True)
+            img.setTemplate_(False)
         except Exception:
             pass
         return img
