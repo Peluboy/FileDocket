@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>FileFlow - Your Downloads, Automatically Organized</title>
+  <meta name="description" content="FileFlow is a free macOS menu bar app that automatically organizes your Downloads folder into neat categories. Never lose a file again.">
+  <meta property="og:title" content="FileFlow - Your Downloads, Automatically Organized">
+  <meta property="og:description" content="A free macOS menu bar app that sorts your Downloads into Images, Documents, Audio, Video, and more.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/peluboy/FileFlow/main/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface-2: #1a1a1a;
+      --border: #262626;
+      --text: #fafafa;
+      --text-dim: #a0a0a0;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.15);
+      --green: #22c55e;
+      --purple: #a855f7;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(10,10,10,0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    nav .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+    nav .logo span { color: var(--accent); }
+    nav a { color: var(--text-dim); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    nav a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      padding: 140px 0 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent-glow);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 999px;
+      margin-bottom: 24px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 18px; color: var(--text-dim);
+      max-width: 520px; margin: 0 auto 32px;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent);
+      color: #fff; font-weight: 600; font-size: 16px;
+      padding: 14px 32px; border-radius: 12px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .hero-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    }
+    .hero-cta svg { width: 20px; height: 20px; }
+    .hero-sub {
+      margin-top: 12px; font-size: 13px; color: var(--text-dim);
+    }
+    .hero-sub a { color: var(--accent); text-decoration: underline; }
+
+    /* Screenshot */
+    .screenshot {
+      margin: 40px auto 80px;
+      max-width: 640px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    }
+    .screenshot img { width: 100%; display: block; }
+
+    /* Features */
+    .features { padding: 80px 0; }
+    .features h2 {
+      text-align: center; font-size: 32px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 48px;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: var(--accent); }
+    .feature-icon {
+      width: 40px; height: 40px;
+      background: var(--accent-glow);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 12px;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .feature-card p { font-size: 14px; color: var(--text-dim); }
+
+    /* How it works */
+    .how { padding: 80px 0; }
+    .how h2 {
+      text-align: center; font-size: 32px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 48px;
+    }
+    .steps {
+      display: flex; gap: 24px; justify-content: center;
+      flex-wrap: wrap;
+    }
+    .step {
+      flex: 1; min-width: 200px; max-width: 240px;
+      text-align: center;
+    }
+    .step-num {
+      width: 48px; height: 48px;
+      background: var(--accent);
+      color: #fff; font-weight: 700; font-size: 20px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .step h3 { font-size: 16px; margin-bottom: 6px; }
+    .step p { font-size: 14px; color: var(--text-dim); }
+
+    /* Pricing */
+    .pricing { padding: 80px 0; }
+    .pricing h2 {
+      text-align: center; font-size: 32px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 12px;
+    }
+    .pricing .subtitle {
+      text-align: center; color: var(--text-dim);
+      font-size: 16px; margin-bottom: 48px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .price-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+    .price-card .label {
+      font-size: 14px; font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .price-card.featured .label { color: var(--accent); }
+    .price-card .price {
+      font-size: 40px; font-weight: 800;
+      letter-spacing: -1px;
+      margin: 8px 0 4px;
+    }
+    .price-card .price span { font-size: 16px; font-weight: 400; color: var(--text-dim); }
+    .price-card .desc { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+    .price-card ul { list-style: none; margin-bottom: 24px; }
+    .price-card li {
+      font-size: 14px; padding: 6px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .price-card li::before { content: '✓'; color: var(--green); font-weight: 700; }
+    .price-card li.disabled { color: var(--text-dim); }
+    .price-card li.disabled::before { content: '•'; color: var(--border); }
+    .price-btn {
+      display: block; width: 100%; text-align: center;
+      padding: 12px; border-radius: 10px;
+      font-weight: 600; font-size: 15px;
+      text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .price-btn:hover { transform: translateY(-1px); }
+    .price-btn.primary { background: var(--accent); color: #fff; }
+    .price-btn.secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+
+    /* FAQ */
+    .faq { padding: 80px 0; }
+    .faq h2 {
+      text-align: center; font-size: 32px; font-weight: 700;
+      letter-spacing: -0.5px; margin-bottom: 48px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .faq-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .faq-item p { font-size: 14px; color: var(--text-dim); }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* CTA section */
+    .final-cta {
+      padding: 80px 0;
+      text-align: center;
+    }
+    .final-cta h2 {
+      font-size: 36px; font-weight: 800;
+      letter-spacing: -1px; margin-bottom: 12px;
+    }
+    .final-cta p { color: var(--text-dim); margin-bottom: 32px; font-size: 16px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <div class="logo">⬇ File<span>Flow</span></div>
+    <div style="display: flex; gap: 24px;">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/peluboy/FileFlow">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Free &amp; Open Source</div>
+    <h1>Your Downloads,<br><span>Automatically</span> Organized</h1>
+    <p>A tiny macOS menu bar app that sorts your messy Downloads into neat categories: Images, Documents, Audio, Video, and more.</p>
+    <a href="https://github.com/peluboy/FileFlow/releases/latest" class="hero-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Free
+    </a>
+    <div class="hero-sub">macOS 12+ · 3 MB · No account required</div>
+  </div>
+</section>
+
+<section class="screenshot">
+  <div class="container">
+    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 16px;">⬇️</div>
+      <p style="color: var(--text-dim); font-size: 14px;">Menu bar icon lives in your menu bar, always one click away</p>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="container">
+    <h2>Simple, Safe, Smart</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗂</div>
+        <h3>Auto-Categorize</h3>
+        <p>Files sorted into Images, Documents, Audio, Video, Archives, Code, Fonts, and more.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">↩️</div>
+        <h3>Always Undoable</h3>
+        <p>Every move is recorded. One click to undo any file back to its original location.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚙️</div>
+        <h3>Runs in Background</h3>
+        <p>Enable Auto-Organize and new downloads are sorted automatically, no clicking needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Custom Rules</h3>
+        <p>Define your own rules: "anything with 'invoice' in the name → Finance folder."</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Never Deletes</h3>
+        <p>FileFlow only moves files, never deletes. Your data is always safe.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📂</div>
+        <h3>Multiple Folders</h3>
+        <p>Organize Downloads plus any extra folders you choose (Desktop, etc.).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="container">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Install</h3>
+        <p>Download the .app or install via Homebrew. Drag to Applications.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Click</h3>
+        <p>Click the ⬇ icon in your menu bar, then "Organize Now."</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Done</h3>
+        <p>Your files are sorted. See a summary of what moved where.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <h2>Free Core, Pro Power</h2>
+    <p class="subtitle">Start free. Upgrade when you want the extras.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="label">Free</div>
+        <div class="price">$0 <span>forever</span></div>
+        <div class="desc">Everything you need to stay organized.</div>
+        <ul>
+          <li>Organize Downloads</li>
+          <li>Auto-Organize (background)</li>
+          <li>Undo &amp; History</li>
+          <li>3 Custom Rules</li>
+          <li class="disabled">Duplicate Finder</li>
+          <li class="disabled">Deep Scan</li>
+          <li class="disabled">Unlimited Rules &amp; Folders</li>
+        </ul>
+        <a href="https://github.com/peluboy/FileFlow/releases/latest" class="price-btn secondary">Download Free</a>
+      </div>        <div class="price-card featured">
+        <div class="label">Pro</div>
+        <div class="price">$8 <span>one-time</span></div>
+        <div class="desc">Power tools for power users.</div>
+        <ul>
+          <li>Everything in Free</li>
+          <li>Duplicate Finder</li>
+          <li>Deep Scan (inside folders)</li>
+          <li>Archive Old Files</li>
+          <li>Unlimited Custom Rules</li>
+          <li>Unlimited Extra Folders</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#buy" class="price-btn primary">Get Pro - $8</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="container">
+    <h2>FAQ</h2>
+    <div class="faq-item">
+      <h3>Is FileFlow safe?</h3>
+      <p>Yes. FileFlow only moves files, it never deletes anything. Every move is logged and undoable. The code is open source.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What about the "unidentified developer" warning?</h3>
+      <p>Since we're a small indie app (not on the Mac App Store), macOS shows a Gatekeeper warning on first launch. Just right-click the app → Open → click "Open." You only do this once.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What folders does it organize?</h3>
+      <p>Downloads by default. You can add extra folders in the app (Pro: unlimited, Free: 1 extra folder).</p>
+    </div>
+    <div class="faq-item">
+      <h3>Can I install via Homebrew?</h3>
+      <p>Yes! <code style="background:var(--surface-2);padding:2px 6px;border-radius:4px;">brew tap peluboy/fileflow && brew install --cask fileflow</code></p>
+    </div>
+    <div class="faq-item">
+      <h3>What's the difference between Free and Pro?</h3>
+      <p>Free includes the core organizer, auto-organize, undo, and 3 custom rules. Pro adds the Duplicate Finder, Deep Scan, unlimited rules/folders, and archive old files for a one-time $8 payment.</p>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2>Clean up your Downloads</h2>
+    <p>Free, open source, and takes 10 seconds to install.</p>
+    <a href="https://github.com/peluboy/FileFlow/releases/latest" class="hero-cta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download FileFlow
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Made with ♥ by <a href="https://github.com/peluboy">Peluboy</a> · <a href="https://github.com/peluboy/FileFlow">Source Code</a> · MIT License</p>
+  </div>
+</footer>
+
+</body>
+</html>

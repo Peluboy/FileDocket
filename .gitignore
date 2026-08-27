@@ -1,28 +1,42 @@
-# PyInstaller / Compilation Outputs
+# SENSITIVE - never commit these
+license.py
+generate_keys.py
+LEMON_SQUEEZY_SETUP.md
+homebrew-tap/
+.env
+*.env
+
+# Build artifacts
 build/
 dist/
 *.spec
+Output/
 
-# Compiled Binaries (Distribute these via GitHub Releases instead of Git)
+# Compiled binaries (distribute via GitHub Releases)
 DownloadsOrganizer.app/
 DownloadsOrganizer-Mac
 DownloadsOrganizer.zip
 DownloadsOrganizer.exe
 
-# Python Cache & Environment
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.env
 venv/
 .venv/
 env/
 
-# OS Metadata
+# OS
 .DS_Store
 Thumbs.db
 
-# User Application State
+# App state (user-specific)
 last_run.json
+history.json
+settings.json
+undo_cooldown.json
 *.log
+
+# Other
+organize_template.py.new
