@@ -1,11 +1,11 @@
-# ⬇ FileFlow
+# ⬇ FileDocket
 
 **Your Downloads, Automatically Organized.**
 
 A free, open-source macOS menu bar app that sorts your messy Downloads folder into neat categories, Images, Documents, Audio, Video, Code, and more.
 
 ```
-brew tap peluboy/fileflow && brew install --cask fileflow
+brew tap peluboy/filedocket && brew install --cask filedocket
 ```
 
 ---
@@ -19,34 +19,34 @@ brew tap peluboy/fileflow && brew install --cask fileflow
 | Undo & History | ✅ | ✅ |
 | Custom Rules | 3 max | Unlimited |
 | Extra Folders (beyond Downloads) | 1 | Unlimited |
-| Duplicate Finder |, | ✅ |
-| Deep Scan (inside folders) |, | ✅ |
-| Archive Old Files (90d+) |, | ✅ |
+| Duplicate Finder | ❌ | ✅ |
+| Deep Scan (inside folders) | ❌ | ✅ |
+| Archive Old Files (90d+) | ❌ | ✅ |
 
 ## Install
 
 ### Option 1: Homebrew (Recommended)
 
 ```bash
-brew tap peluboy/fileflow
-brew install --cask fileflow
+brew tap peluboy/filedocket
+brew install --cask filedocket
 ```
 
 ### Option 2: Direct Download
 
-1. Download the latest `.dmg` from [Releases](https://github.com/peluboy/FileFlow/releases/latest)
-2. Open the `.dmg` and drag **FileFlow** to your Applications folder
-3. Launch FileFlow from Applications
+1. Download the latest `.dmg` from [Releases](https://github.com/peluboy/FileDocket/releases/latest)
+2. Open the `.dmg` and drag **FileDocket** to your Applications folder
+3. Launch FileDocket from Applications
 
-### ⚠️ Gatekeeper Warning
+### Gatekeeper Warning
 
-Since FileFlow isn't on the Mac App Store, macOS may show a warning:
+Since FileDocket isn't on the Mac App Store, macOS may show a warning:
 
-> *"FileFlow can't be opened because Apple cannot check it for malicious software."*
+> *"FileDocket can't be opened because Apple cannot check it for malicious software."*
 
 **Fix (one-time):** Right-click the app → **Open** → Click **Open** in the dialog.
 
-Alternatively: **System Settings → Privacy & Security → scroll down → click "Open Anyway"** next to FileFlow.
+Alternatively: **System Settings → Privacy & Security → scroll down → click "Open Anyway"** next to FileDocket.
 
 ## How It Works
 
@@ -81,7 +81,7 @@ Pro unlocks power tools for a one-time $8 payment:
 - **Unlimited Folders**, Organize any number of folders, not just Downloads
 - **Archive Old Files**, Automatically move old installers and archives
 
-[Get Pro →](https://your-landing-page.com/#pricing)
+[Get Pro →](https://peluboy.lemonsqueezy.com)
 
 ## Building from Source
 
@@ -108,7 +108,11 @@ TARGET_ARCH=universal2 ./build_macos_release.sh
 
 ## Privacy
 
-FileFlow runs **entirely on your Mac**. No network requests, no analytics, no telemetry. Your files never leave your machine.
+FileDocket runs **entirely on your Mac**. No network requests, no analytics, no telemetry. Your files never leave your machine.
+
+## Support
+
+Email: imulep2104@gmail.com
 
 ## License
 

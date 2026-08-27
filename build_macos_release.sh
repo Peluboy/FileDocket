@@ -3,7 +3,7 @@
 # build_macos_release.sh — For the DEVELOPER.
 #
 # Produces a single, easy-to-install DMG that a non-technical user can use with
-# NO terminal and NO Python:  double-click the .dmg → drag FileFlow
+# NO terminal and NO Python:  double-click the .dmg → drag FileDocket
 # into Applications → done.
 #
 # The built .app is fully self-contained: the background "Auto-Organize"
@@ -11,7 +11,7 @@
 # itself anywhere (no companion files needed).
 #
 # ══ What this script produces ═══════════════════════════════════════════════
-#   dist/FileFlow.dmg     <- SHARE THIS with users (macOS)
+#   dist/FileDocket.dmg     <- SHARE THIS with users (macOS)
 #
 # ══ Prerequisites (one-time, on YOUR machine, NOT the user's) ═══════════════
 #   * Python 3 with PyInstaller and rumps installed:
@@ -34,9 +34,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-APP_NAME="FileFlow"
-VOL_NAME="FileFlow"
-DMG="FileFlow.dmg"
+APP_NAME="FileDocket"
+VOL_NAME="FileDocket"
+DMG="FileDocket.dmg"
 DMG_OUT="dist/$DMG"
 TARGET_ARCH="${TARGET_ARCH:-arm64}"          # change to universal2 for Intel+ARM
 
@@ -51,9 +51,9 @@ test -f dist/fileflow-cli || { echo "❌ CLI build failed"; exit 1; }
 echo "▸ Building the .app bundle (self-contained)…"
 # Clean old build outputs so we never bake stale files in.
 # Note: arch is inherited from the build machine for the .spec build.
-rm -rf build dist/FileFlow.app FileFlow.app work
-python3 -m PyInstaller --noconfirm --clean FileFlow.spec >/dev/null
-APP="dist/FileFlow.app"
+rm -rf build dist/FileDocket.app FileDocket.app work
+python3 -m PyInstaller --noconfirm --clean FileDocket.spec >/dev/null
+APP="dist/FileDocket.app"
 test -d "$APP" || { echo "❌ .app build failed"; exit 1; }
 
 # Basic sanity: make sure the CLI actually made it inside the bundle.
@@ -93,8 +93,8 @@ fi
 echo ""
 echo "✅ Done."
 echo "   • Arch:          $TARGET_ARCH"
-echo "   • .app bundle:   dist/FileFlow.app   (self-contained)"
+echo "   • .app bundle:   dist/FileDocket.app   (self-contained)"
 echo "   • Installer:     $DMG_OUT   ← share THIS file."
 echo ""
-echo "   Users: double-click the dmg, drag 'FileFlow' onto"
+echo "   Users: double-click the dmg, drag 'FileDocket' onto"
 echo "   'Applications', then launch it. No terminal, no Python on their side."

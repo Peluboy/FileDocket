@@ -10,7 +10,7 @@ import rumps
 import organize_downloads
 import license as license_mod
 
-APP_NAME = "FileFlow"
+APP_NAME = "FileDocket"
 APP_VERSION = "1.2.0"
 APP_AUTHOR = "Peluboy"
 
@@ -51,8 +51,8 @@ LOG_FILE = LOG_DIR / "activity.log"
 STATE_FILE = LOG_DIR / "last_run.json"
 SETTINGS_FILE = LOG_DIR / "settings.json"
 HISTORY_FILE = LOG_DIR / "history.json"
-PLIST_PATH = Path.home() / "Library/LaunchAgents/com.fileflow.organizer.plist"
-LOGIN_PLIST = Path.home() / "Library/LaunchAgents/com.fileflow.login.plist"
+PLIST_PATH = Path.home() / "Library/LaunchAgents/com.filedocket.organizer.plist"
+LOGIN_PLIST = Path.home() / "Library/LaunchAgents/com.filedocket.login.plist"
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -62,14 +62,14 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
-class FileFlowApp(rumps.App):
+class FileDocketApp(rumps.App):
     def __init__(self):
         try:
             with open("/tmp/menu_bar_debug.log", "a") as f:
-                f.write("FileFlowApp __init__ started\n")
+                f.write("FileDocketApp __init__ started\n")
         except Exception as e:
             pass
-        super(FileFlowApp, self).__init__("FileFlow", icon=resource_path("status_iconTemplate.png"), template=True,
+        super(FileDocketApp, self).__init__("FileDocket", icon=resource_path("status_iconTemplate.png"), template=True,
                                           quit_button=None)
         
         # Initialize menu items
@@ -81,13 +81,13 @@ class FileFlowApp(rumps.App):
         self.folders_item = rumps.MenuItem("Add Folders")
         self.rules_item = rumps.MenuItem("Rules")
         self.tools_item = rumps.MenuItem("Tools")
-        self.launch_login_item = rumps.MenuItem("Launch FileFlow at login", callback=self.toggle_launch_login)
+        self.launch_login_item = rumps.MenuItem("Launch FileDocket at login", callback=self.toggle_launch_login)
         self.welcome_item = rumps.MenuItem("Welcome Guide", callback=self.show_welcome)
-        self.about_item = rumps.MenuItem("About FileFlow", callback=self.show_about)
+        self.about_item = rumps.MenuItem("About FileDocket", callback=self.show_about)
         self.support_item = rumps.MenuItem("Support", callback=self.show_support)
         self.get_pro_item = rumps.MenuItem("Pro", callback=self.show_get_pro)
         _set_menu_icon(self.get_pro_item, "icon-pro-crown")
-        self.quit_item = rumps.MenuItem("Quit FileFlow", key="q", callback=self.quit_app)
+        self.quit_item = rumps.MenuItem("Quit FileDocket", key="q", callback=self.quit_app)
         self.view_log_item = rumps.MenuItem("View Activity Log", callback=self.view_log)
         
         # Build menu
@@ -158,7 +158,7 @@ class FileFlowApp(rumps.App):
 
         try:
             with open("/tmp/menu_bar_debug.log", "a") as f:
-                f.write("FileFlowApp __init__ completed successfully\n")
+                f.write("FileDocketApp __init__ completed successfully\n")
         except Exception as e:
             pass
 
@@ -168,9 +168,9 @@ class FileFlowApp(rumps.App):
         Search order (so the app is fully self-contained when installed as a
         plain .app in /Applications):
 
-          1. The `fileflow-cli` binary embedded as a resource inside
+          1. The `filedocket-cli` binary embedded as a resource inside
              this very bundle (new, self-contained layout).
-          2. A companion CLI named `FileFlow-Mac` sitting *next to*
+          2. A companion CLI named `FileDocket-Mac` sitting *next to*
              this .app (legacy folder layout, kept for compatibility).
           3. The python source script (development mode).
         """
@@ -180,24 +180,24 @@ class FileFlowApp(rumps.App):
         #    several candidate spots so it works however the layout is laid out.
         candidates = []
         try:
-            candidates.append(resource_path("fileflow-cli"))
+            candidates.append(resource_path("filedocket-cli"))
         except Exception:
             pass
         if getattr(sys, 'frozen', False):
             bundle_root = Path(sys.executable).parent.parent.parent  # == .app/Contents
             candidates += [
-                bundle_root / "Frameworks" / "fileflow-cli",
-                bundle_root / "Resources" / "fileflow-cli",
+                bundle_root / "Frameworks" / "filedocket-cli",
+                bundle_root / "Resources" / "filedocket-cli",
             ]
         for cand in candidates:
             if os.path.isfile(str(cand)):
                 return Path(cand)
 
-        # 2) Legacy companion binary next to FileFlow.app
+        # 2) Legacy companion binary next to FileDocket.app
         if getattr(sys, 'frozen', False):
-            # sys.executable is inside FileFlow.app/Contents/MacOS/
+            # sys.executable is inside FileDocket.app/Contents/MacOS/
             app_dir = Path(sys.executable).parent.parent.parent.parent
-            bin_path = app_dir / "FileFlow-Mac"
+            bin_path = app_dir / "FileDocket-Mac"
             if bin_path.exists():
                 return bin_path
 
@@ -275,7 +275,7 @@ class FileFlowApp(rumps.App):
         organize_downloads.save_extra_roots(existing)
         self.refresh_folders_menu()
         self._reload_plist_if_enabled()
-        rumps.notification("FileFlow", "Folder added",
+        rumps.notification("FileDocket", "Folder added",
                            f"Now organizing: {folder}")
 
     def remove_extra_folder(self, path):
@@ -285,7 +285,7 @@ class FileFlowApp(rumps.App):
             organize_downloads.save_extra_roots(existing)
             self.refresh_folders_menu()
             self._reload_plist_if_enabled()
-            rumps.notification("FileFlow", "Folder removed",
+            rumps.notification("FileDocket", "Folder removed",
                                f"No longer organizing: {path}")
 
     def _watch_paths(self):
@@ -339,7 +339,7 @@ class FileFlowApp(rumps.App):
         self.refresh_undo_menu()
         self.update_last_run_ui()
         if entry:
-            rumps.notification("FileFlow", "Move undone",
+            rumps.notification("FileDocket", "Move undone",
                                f"Put back: {entry.get('orig')}")
         else:
             rumps.alert(title="Undo", message="Nothing to undo, or the file was "
@@ -467,13 +467,13 @@ class FileFlowApp(rumps.App):
         if PLIST_PATH.exists():
             try:
                 self._disable_job()
-                rumps.notification("FileFlow", "Auto-Organize Disabled", "Background service stopped.")
+                rumps.notification("FileDocket", "Auto-Organize Disabled", "Background service stopped.")
             except Exception as e:
                 rumps.alert(title="Error", message=f"Failed to disable auto-organize: {e}")
         else:
             try:
                 self._enable_job(bin_path)
-                rumps.notification("FileFlow", "Auto-Organize Enabled", "Your folders will now be organized automatically.")
+                rumps.notification("FileDocket", "Auto-Organize Enabled", "Your folders will now be organized automatically.")
             except Exception as e:
                 rumps.alert(title="Error", message=f"Failed to enable auto-organize: {e}")
                 if PLIST_PATH.exists():
@@ -493,7 +493,7 @@ class FileFlowApp(rumps.App):
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.fileflow.organizer</string>
+    <string>com.filedocket.organizer</string>
     <key>ProgramArguments</key>
     <array>
         {"".join(f"<string>{arg}</string>" for arg in args)}
@@ -637,7 +637,7 @@ class FileFlowApp(rumps.App):
             return self._icon_frames
         try:
             from AppKit import NSBitmapImageRep
-            frames_dir = Path("/tmp/fileflow-spinner")
+            frames_dir = Path("/tmp/filedocket-spinner")
             frames_dir.mkdir(parents=True, exist_ok=True)
             paths = []
             for i in range(12):
@@ -756,13 +756,13 @@ class FileFlowApp(rumps.App):
                         t.stop()
                     rumps.alert(
                         title=f"Welcome to {APP_NAME}!",
-                        message="FileFlow lives in your menu bar, look for the "
+                        message="FileDocket lives in your menu bar, look for the "
                                 "little arrow icon at the top-right of your screen.\n\n"
                                 "Click it any time to:\n\n"
                                 "  Organize Now: sort loose files into folders\n"
                                 "  Auto-Organize: sort new downloads automatically\n"
                                 "  Undo, Tools, Rules and more\n\n"
-                                "First launch? If macOS says FileFlow can't be "
+                                "First launch? If macOS says FileDocket can't be "
                                 "opened, right-click it, then Open, then click Open.\n\n"
                                 f"Made with love by {APP_AUTHOR}",
                     )
@@ -781,13 +781,13 @@ class FileFlowApp(rumps.App):
         """Re-open the welcome guide on demand (menu item)."""
         rumps.alert(
             title=f"Welcome to {APP_NAME}!",
-            message="FileFlow lives in your menu bar, look for the "
+            message="FileDocket lives in your menu bar, look for the "
                     "little arrow icon at the top-right of your screen.\n\n"
                     "Click it any time to:\n\n"
                     "  Organize Now: sort loose files into folders\n"
                     "  Auto-Organize: sort new downloads automatically\n"
                     "  Undo, Tools, Rules and more\n\n"
-                    "When FileFlow is working, the icon spins so you know "
+                    "When FileDocket is working, the icon spins so you know "
                     "it is busy.\n\n"
                     f"Made with love by {APP_AUTHOR}",
         )
@@ -800,7 +800,7 @@ class FileFlowApp(rumps.App):
             return True
         title = f"Pro Feature"
         msg = (f"{feature_name} is a Pro feature.\n\n"
-               f"Upgrade to FileFlow Pro for $8 (one-time) to unlock:\n\n"
+               f"Upgrade to FileDocket Pro for $8 (one-time) to unlock:\n\n"
                f"  Duplicate Finder\n"
                f"  Deep Scan\n"
                f"  Archive Old Files\n"
@@ -815,15 +815,15 @@ class FileFlowApp(rumps.App):
             info = license_mod.get_license_info()
             key = info.get('key', '')
             rumps.alert(
-                title="FileFlow Pro Active",
+                title="FileDocket Pro Active",
                 message=f"You are a Pro user!\n\n"
                         f"License: {key[:8]}...\n\n"
-                        f"Thank you for supporting FileFlow."
+                        f"Thank you for supporting FileDocket."
             )
             return
 
         resp = rumps.alert(
-            title="FileFlow Pro, $8 one-time",
+            title="FileDocket Pro, $8 one-time",
             message="Unlock power tools:\n\n"
                     "  Duplicate Finder: find and clean up duplicates\n"
                     "  Deep Scan: look inside organized folders\n"
@@ -838,7 +838,7 @@ class FileFlowApp(rumps.App):
         if resp:
             w = rumps.Window(
                 message="Paste your Pro license key:",
-                title="Activate FileFlow Pro",
+                title="Activate FileDocket Pro",
                 default_text="",
                 dimensions=(360, 32)
             )
@@ -846,7 +846,7 @@ class FileFlowApp(rumps.App):
             if r.clicked and r.text.strip():
                 result = license_mod.validate_license_key(r.text.strip())
                 if result.get("valid"):
-                    rumps.alert(title="Pro Activated", message="FileFlow Pro is now active on this Mac.")
+                    rumps.alert(title="Pro Activated", message="FileDocket Pro is now active on this Mac.")
                     self._build_tools_menu()
                     self.refresh_folders_menu()
                     self.refresh_rules_menu()
@@ -870,7 +870,7 @@ class FileFlowApp(rumps.App):
             title="Support",
             message="Having issues with your license key or the app?\n\n"
                     "Email: imulep2104@gmail.com\n"
-                    "Subject: FileFlow Support\n\n"
+                    "Subject: FileDocket Support\n\n"
                     "Please include:\n"
                     "  - Your license key (if applicable)\n"
                     "  - What you were trying to do\n"
@@ -941,12 +941,12 @@ class FileFlowApp(rumps.App):
             self.deep_scan_item.state = 1 if new_val else 0
         if new_val:
             rumps.notification(
-                "FileFlow", "Deep Scan: ON",
+                "FileDocket", "Deep Scan: ON",
                 "Tools will now look inside organized folders too "
                 "(bookkeeping folders like _Duplicates are skipped).")
         else:
             rumps.notification(
-                "FileFlow", "Deep Scan: OFF",
+                "FileDocket", "Deep Scan: OFF",
                 "Tools will only look at loose files at the top level.")
 
     # ---- Duplicates -------------------------------------------------------
@@ -1073,7 +1073,7 @@ class FileFlowApp(rumps.App):
             rules.remove(rule)
             organize_downloads.save_rules(rules)
             self.refresh_rules_menu()
-            rumps.notification("FileFlow", "Rule removed",
+            rumps.notification("FileDocket", "Rule removed",
                                f"No longer sending {rule.get('value')} to "
                                f"{rule.get('dest')}.")
 
@@ -1090,7 +1090,7 @@ class FileFlowApp(rumps.App):
         label = "extension (type: iso, pdf, …)" if match == "suffix" \
             else "word in the name (e.g. invoice)"
         w1 = rumps.Window(message=f"Match on {label}",
-                          title="FileFlow — New rule",
+                          title="FileDocket — New rule",
                           default_text="", dimensions=(360, 32))
         r1 = w1.run()
         if not (r1.clicked and r1.text.strip()):
@@ -1109,7 +1109,7 @@ class FileFlowApp(rumps.App):
         rules.append({"match": match, "value": value, "dest": dest})
         organize_downloads.save_rules(rules)
         self.refresh_rules_menu()
-        rumps.notification("FileFlow", "Rule added",
+        rumps.notification("FileDocket", "Rule added",
                            f"{value} → {dest}")
 
     # ---- Launch at login -------------------------------------------------
@@ -1123,8 +1123,8 @@ class FileFlowApp(rumps.App):
                 subprocess.run(["launchctl", "unload", str(LOGIN_PLIST)],
                                capture_output=True)
                 LOGIN_PLIST.unlink()
-                rumps.notification("FileFlow", "Launch at login: off",
-                                   "FileFlow will no longer open at login.")
+                rumps.notification("FileDocket", "Launch at login: off",
+                                   "FileDocket will no longer open at login.")
             except Exception as e:
                 rumps.alert(title="Error", message=f"Failed to disable: {e}")
         else:
@@ -1135,7 +1135,7 @@ class FileFlowApp(rumps.App):
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.fileflow.login</string>
+    <string>com.filedocket.login</string>
     <key>ProgramArguments</key>
     <array>
         <string>{exe}</string>
@@ -1148,15 +1148,15 @@ class FileFlowApp(rumps.App):
                 LOGIN_PLIST.write_text(plist_content)
                 subprocess.run(["launchctl", "load", str(LOGIN_PLIST)],
                                capture_output=True)
-                rumps.notification("FileFlow", "Launch at login: on",
-                                   "FileFlow will open automatically when you "
+                rumps.notification("FileDocket", "Launch at login: on",
+                                   "FileDocket will open automatically when you "
                                    "log in.")
             except Exception as e:
                 rumps.alert(title="Error", message=f"Failed to enable: {e}")
         self.update_launch_login_state()
 
     def _app_executable(self):
-        """The path launchd should run to start the FileFlow menu-bar app."""
+        """The path launchd should run to start the FileDocket menu-bar app."""
         return str(Path(sys.executable).resolve())
 
 
@@ -1171,4 +1171,4 @@ class FileFlowApp(rumps.App):
             rumps.alert(title="No Log File", message="No activity log has been created yet. Run the organizer first!")
 
 if __name__ == "__main__":
-    FileFlowApp().run()
+    FileDocketApp().run()
