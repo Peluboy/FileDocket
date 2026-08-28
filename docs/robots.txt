@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://peluboy.github.io/FileDocket/sitemap.xml
