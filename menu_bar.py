@@ -12,7 +12,7 @@ import organize_downloads
 import license as license_mod
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.4"
+APP_VERSION = "1.2.5"
 APP_AUTHOR = "Peluboy"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
 UPDATE_URL = "https://peluboy.github.io/FileDocket/#update"
@@ -167,10 +167,15 @@ class FileDocketApp(rumps.App):
         self.rules_item = rumps.MenuItem("Rules")
         self.tools_item = rumps.MenuItem("Tools")
         self.launch_login_item = rumps.MenuItem("Launch FileDocket at login", callback=self.toggle_launch_login)
+        self.help_item = rumps.MenuItem("Help")
         self.welcome_item = rumps.MenuItem("Welcome Guide", callback=self.show_welcome)
         self.about_item = rumps.MenuItem("About FileDocket", callback=self.show_about)
         self.update_item = rumps.MenuItem("Check for updates", callback=self.show_update)
         self.support_item = rumps.MenuItem("Support", callback=self.show_support)
+        self.help_item.add(self.welcome_item)
+        self.help_item.add(self.about_item)
+        self.help_item.add(self.update_item)
+        self.help_item.add(self.support_item)
         self.get_pro_item = rumps.MenuItem("Pro", callback=self.show_get_pro)
         _set_menu_icon(self.get_pro_item, "icon-pro-crown")
         self.quit_item = rumps.MenuItem("Quit FileDocket", key="q", callback=self.quit_app)
@@ -192,10 +197,7 @@ class FileDocketApp(rumps.App):
             self.view_log_item,
             self.get_pro_item,
             rumps.separator,
-            self.welcome_item,
-            self.about_item,
-            self.update_item,
-            self.support_item,
+            self.help_item,
             rumps.separator,
             self.quit_item,
         ]
@@ -1051,7 +1053,7 @@ class FileDocketApp(rumps.App):
                     f"Developer: {APP_AUTHOR}\n"
                     f"License: {pro_status}\n"
                     f"It only ever moves files, never deletes.\n\n"
-                    f"New features: Check for updates in this menu, "
+                    f"New features: Help → Check for updates, "
                     f"or run the same install command again.",
         )
 

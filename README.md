@@ -37,7 +37,7 @@ irm https://peluboy.github.io/FileDocket/install.ps1 | iex
 
 You do not need Homebrew. The Terminal command below is **macOS only**.
 
-**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.4/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
+**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.5/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
 
 **One command** (uses Homebrew if `brew` is present, otherwise the DMG, then clears quarantine):
 
@@ -66,7 +66,7 @@ macOS:
 curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 ```
 
-Homebrew: `brew upgrade --cask peluboy/tap/filedocket`. Or download the latest DMG and replace FileDocket in Applications. In the app: **Check for updates**.
+Homebrew: `brew upgrade --cask peluboy/tap/filedocket`. Or download the latest DMG and replace FileDocket in Applications. In the app: **Help → Check for updates**.
 
 Windows:
 
@@ -74,7 +74,7 @@ Windows:
 irm https://peluboy.github.io/FileDocket/install.ps1 | iex
 ```
 
-Or download the latest Setup.exe and run it over the old install. In the tray: **Check for updates**.
+Or download the latest Setup.exe and run it over the old install. In the tray: **Help → Check for updates**.
 
 ### Windows
 

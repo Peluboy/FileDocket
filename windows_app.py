@@ -18,7 +18,7 @@ from pathlib import Path
 import organize_downloads
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.4"
+APP_VERSION = "1.2.5"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
 UPDATE_URL = "https://peluboy.github.io/FileDocket/#update"
 TASK_NAME = "FileDocket"
@@ -233,6 +233,16 @@ def start_tray() -> None:
     def on_pro(icon, item):
         webbrowser.open(WAITLIST_URL)
 
+    def on_about(icon, item):
+        notify(
+            APP_NAME,
+            f"{APP_NAME} v{APP_VERSION}. It only moves files, never deletes. "
+            "Help → Check for updates for a new version.",
+        )
+
+    def on_support(icon, item):
+        webbrowser.open("mailto:imulep2104@gmail.com?subject=FileDocket%20Support")
+
     def on_update(icon, item):
         webbrowser.open(UPDATE_URL)
         notify(
@@ -257,7 +267,14 @@ def start_tray() -> None:
             Item("Launch FileDocket at login", on_login, checked=lambda _: login_on),
             pystray.Menu.SEPARATOR,
             Item("Go Pro", on_pro),
-            Item("Check for updates", on_update),
+            Item(
+                "Help",
+                pystray.Menu(
+                    Item("About FileDocket", on_about),
+                    Item("Check for updates", on_update),
+                    Item("Support", on_support),
+                ),
+            ),
             pystray.Menu.SEPARATOR,
             Item("Quit FileDocket", on_quit),
         )

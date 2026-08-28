@@ -2,7 +2,7 @@
 ; Output: Output\FileDocket-Setup.exe
 
 #define MyAppName "FileDocket"
-#define MyAppVersion "1.2.4"
+#define MyAppVersion "1.2.5"
 #define MyAppExeName "FileDocket.exe"
 #define MyAppPublisher "Peluboy"
 #define MyAppURL "https://peluboy.github.io/FileDocket/"
