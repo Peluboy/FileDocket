@@ -10,7 +10,11 @@ A free, open-source Downloads organizer for **macOS** (menu bar) and **Windows**
 curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 ```
 
-**Windows:** [Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe)
+**Windows** (PowerShell; Command Prompt works too):
+
+```
+irm https://peluboy.github.io/FileDocket/install.ps1 | iex
+```
 
 ---
 
@@ -54,13 +58,31 @@ macOS 12+, Intel and Apple Silicon.
 
 ### Windows
 
-[Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe). Double-click, Next, Finish. FileDocket appears in the notification area (show hidden icons if needed).
+**No Terminal:** [Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe). Double-click, Next, Finish. FileDocket appears in the notification area (show hidden icons if needed).
+
+**One command** (silent Setup, then a portable exe if Setup is blocked). 64-bit Windows 10 or 11. No admin.
+
+PowerShell:
+
+```powershell
+irm https://peluboy.github.io/FileDocket/install.ps1 | iex
+```
+
+Command Prompt:
+
+```bat
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://peluboy.github.io/FileDocket/install.ps1 | iex"
+```
 
 If SmartScreen appears: **More info → Run anyway**. The installer is not Microsoft-signed yet.
 
-It does not use Homebrew. Do not run the `curl | bash` command on Windows.
+It does not use Homebrew. Do not run the macOS `curl | bash` command on Windows.
 
-Uninstall: Settings → Apps → FileDocket.
+Uninstall: Settings → Apps → FileDocket, or:
+
+```powershell
+irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex
+```
 
 ### First launch (Gatekeeper, macOS)
 
@@ -106,7 +128,7 @@ rm -f ~/Library/LaunchAgents/com.filedocket.organizer.plist ~/Library/LaunchAgen
 
 `--zap` / deleting `~/.file-organizer` removes local settings. Organized files in Downloads stay where they are.
 
-Windows: Settings → Apps → FileDocket → Uninstall.
+Windows: Settings → Apps → FileDocket, or `irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex`.
 
 ## How It Works
 

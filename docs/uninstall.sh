@@ -5,7 +5,8 @@ set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "This uninstall script is for macOS."
-  echo "Windows: Settings → Apps → FileDocket → Uninstall."
+  echo "Windows PowerShell: irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex"
+  echo "Or Settings → Apps → FileDocket."
   exit 1
 fi
 

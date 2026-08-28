@@ -5,8 +5,8 @@ set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "This installer is for macOS."
-  echo "Windows: download FileDocket-Setup.exe from"
-  echo "https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe"
+  echo "Windows PowerShell: irm https://peluboy.github.io/FileDocket/install.ps1 | iex"
+  echo "Windows Command Prompt: powershell -NoProfile -ExecutionPolicy Bypass -Command \"irm https://peluboy.github.io/FileDocket/install.ps1 | iex\""
   exit 1
 fi
 

@@ -40,7 +40,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: FileDocket-Setup
-          path: Output/FileDocket-Setup.exe
+          path: |
+            Output/FileDocket-Setup.exe
+            dist/FileDocket.exe
 
       - name: Publish download
         env:
@@ -53,12 +55,12 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             gh release create windows-installer --title "FileDocket $ver for Windows" --notes $notes
           }
-          gh release upload windows-installer Output/FileDocket-Setup.exe --clobber
+          gh release upload windows-installer Output/FileDocket-Setup.exe dist/FileDocket.exe organize.cmd --clobber
 
           curl.exe -fsSL -o FileDocket.dmg "https://github.com/Peluboy/homebrew-tap/raw/v$ver/FileDocket.dmg"
           gh release view "v$ver" --json tagName 2>$null
           if ($LASTEXITCODE -ne 0) {
             gh release create "v$ver" --title "FileDocket $ver" --latest --notes "Mac DMG and Windows Setup.exe. Pro dialog buttons work on macOS."
           }
-          gh release upload "v$ver" Output/FileDocket-Setup.exe FileDocket.dmg --clobber
+          gh release upload "v$ver" Output/FileDocket-Setup.exe dist/FileDocket.exe organize.cmd FileDocket.dmg --clobber
           gh release edit "v$ver" --latest=true

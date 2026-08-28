@@ -1056,7 +1056,7 @@
       <div class="wrap">
         <p class="section-kicker">Setup</p>
         <h2>Get it on your computer.</h2>
-        <p class="section-lead">The tab matches this computer. Switch if you need the other installer. The one-line command is macOS only.</p>
+        <p class="section-lead">The tab matches this computer. Switch if you need the other installer. Each OS has a one-line command as a fallback.</p>
 
         <div class="os-tabs" role="tablist" aria-label="Choose your system">
           <button class="os-tab" type="button" role="tab" id="tab-mac" aria-controls="panel-mac" data-os="mac">macOS</button>
@@ -1090,7 +1090,7 @@
           </div>
           <div class="install">
             <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
-            <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install">Copy</button>
+            <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install" data-platform="mac">Copy</button>
           </div>
           <p class="path-note">If macOS blocks first open: click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
         </div>
@@ -1101,26 +1101,30 @@
               <div class="howto-num">01</div>
               <div>
                 <h3>Download the installer</h3>
-                <p>Double-click FileDocket-Setup.exe, then Next, Finish. No Terminal, no Homebrew.</p>
+                <p>Double-click FileDocket-Setup.exe, then Next, Finish. No Terminal required. 64-bit Windows 10 or 11.</p>
                 <a class="btn btn-solid" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download for Windows</a>
               </div>
             </div>
             <div class="howto-row">
               <div class="howto-num">02</div>
               <div>
-                <h3>Find it in the tray</h3>
-                <p>FileDocket sits in the notification area. Click Show hidden icons if you do not see it, then Organize Now. Add Desktop or any other folder from the menu.</p>
+                <h3>Or paste one command</h3>
+                <p>Silent install, no admin. If Setup is blocked, it copies FileDocket.exe into your user folder and starts it. PowerShell, Command Prompt, and Windows Terminal all work.</p>
               </div>
             </div>
             <div class="howto-row">
               <div class="howto-num">03</div>
               <div>
-                <h3>Optional: auto-organize</h3>
-                <p>The installer can run every 15 minutes and launch at sign-in. Uninstall from Settings → Apps → FileDocket. Organized files stay put.</p>
+                <h3>Find it in the tray</h3>
+                <p>Click Show hidden icons if you do not see it, then Organize Now. Uninstall from Settings → Apps, or run the uninstall command below. Organized files stay put.</p>
               </div>
             </div>
           </div>
-          <p class="path-note">If SmartScreen appears: More info → Run anyway. That is a one-time prompt. The Mac command above will not work on Windows.</p>
+          <div class="install">
+            <code>irm https://peluboy.github.io/FileDocket/install.ps1 | iex</code>
+            <button class="copy" type="button" data-copy="irm https://peluboy.github.io/FileDocket/install.ps1 | iex" data-track="copy_install" data-platform="win">Copy</button>
+          </div>
+          <p class="path-note">PowerShell. From Command Prompt: <code>powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://peluboy.github.io/FileDocket/install.ps1 | iex"</code>. If SmartScreen appears: More info → Run anyway. Uninstall: <code>irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex</code></p>
         </div>
       </div>
     </section>
@@ -1231,7 +1235,7 @@
         </details>
         <details>
           <summary>Windows says SmartScreen protected my PC</summary>
-          <p>The Windows installer is not Microsoft-signed yet. Click More info, then Run anyway. That is a one-time prompt. After that, FileDocket is in the notification area (hidden icons if you do not see it).</p>
+          <p>The Windows installer is not Microsoft-signed yet. Click More info, then Run anyway. That is a one-time prompt. Or skip the wizard: in PowerShell run <code>irm https://peluboy.github.io/FileDocket/install.ps1 | iex</code>. If Setup is blocked, that command copies FileDocket.exe into %LOCALAPPDATA%\FileDocket instead. After that, FileDocket is in the notification area (hidden icons if you do not see it).</p>
         </details>
         <details>
           <summary>Which folders does it organize?</summary>
@@ -1239,7 +1243,7 @@
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
-          <p>On macOS only. You do not need Homebrew. The one-line installer checks for it: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If <code>brew</code> is present, it installs the cask. If not, it uses the DMG. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>. Windows users should <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>.</p>
+          <p>macOS: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code> (Homebrew if present, otherwise the DMG). Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>. Windows: <code>irm https://peluboy.github.io/FileDocket/install.ps1 | iex</code> in PowerShell, or <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. From Command Prompt: <code>powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://peluboy.github.io/FileDocket/install.ps1 | iex"</code>.</p>
         </details>
         <details>
           <summary>brew says untrusted tap or the cask exists in multiple taps</summary>
@@ -1247,11 +1251,11 @@
         </details>
         <details>
           <summary>It says brew: command not found</summary>
-          <p>That command is macOS only. If you are on Windows, <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. On a Mac, you do not need Homebrew: use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.4/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
+          <p>The <code>curl | bash</code> command is macOS only. On Windows use PowerShell: <code>irm https://peluboy.github.io/FileDocket/install.ps1 | iex</code>, or <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. On a Mac, you do not need Homebrew: use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.4/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
         </details>
         <details>
           <summary>How do I uninstall?</summary>
-          <p>macOS: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>, or <code>brew uninstall --cask peluboy/tap/filedocket</code>, or drag FileDocket from Applications to Trash. Windows: Settings → Apps → FileDocket → Uninstall. Organized files are not deleted. Add brew <code>--zap</code> only on Macs that are not a FileDocket source checkout.</p>
+          <p>macOS: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>, or <code>brew uninstall --cask peluboy/tap/filedocket</code>, or drag FileDocket from Applications to Trash. Windows: Settings → Apps → FileDocket, or <code>irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex</code>. Organized files are not deleted. Add brew <code>--zap</code> only on Macs that are not a FileDocket source checkout.</p>
         </details>
         <details>
           <summary>When can I buy Pro?</summary>
@@ -1344,7 +1348,7 @@
         if (name === "download") {
           fdTrack("download", { platform: platform || "unknown", transport_type: "beacon" });
         } else if (name === "copy_install") {
-          fdTrack("copy_install", { platform: "mac" });
+          fdTrack("copy_install", { platform: platform || "unknown" });
         }
       });
 
