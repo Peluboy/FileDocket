@@ -2,11 +2,15 @@
 
 **Your Downloads, Automatically Organized.**
 
-A free, open-source macOS menu bar app that sorts your messy Downloads folder into neat categories, Images, Documents, Audio, Video, Code, and more.
+A free, open-source Downloads organizer for **macOS** (menu bar) and **Windows** (notification area). It sorts messy folders into Images, Documents, Audio, Video, Code, and more.
+
+**macOS** (detects Homebrew, otherwise the DMG):
 
 ```
 curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 ```
+
+**Windows:** [Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe)
 
 ---
 
@@ -25,7 +29,9 @@ curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 
 ## Install
 
-You do not need Homebrew.
+### macOS
+
+You do not need Homebrew. The Terminal command below is **macOS only**.
 
 **No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
 
@@ -46,7 +52,17 @@ If you already ran `brew tap peluboy/filedocket`, the installer untaps it. To do
 
 macOS 12+, Intel and Apple Silicon.
 
-### First launch (Gatekeeper)
+### Windows
+
+[Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe). Double-click, Next, Finish. FileDocket appears in the notification area (show hidden icons if needed).
+
+If SmartScreen appears: **More info → Run anyway**. The installer is not Microsoft-signed yet.
+
+It does not use Homebrew. Do not run the `curl | bash` command on Windows.
+
+Uninstall: Settings → Apps → FileDocket.
+
+### First launch (Gatekeeper, macOS)
 
 FileDocket is not notarized. On macOS Sequoia and later, a double-click shows *Not Opened* with only **Done** and **Move to Trash**. That is normal. Control-click → Open no longer bypasses Gatekeeper.
 
@@ -90,9 +106,11 @@ rm -f ~/Library/LaunchAgents/com.filedocket.organizer.plist ~/Library/LaunchAgen
 
 `--zap` / deleting `~/.file-organizer` removes local settings. Organized files in Downloads stay where they are.
 
+Windows: Settings → Apps → FileDocket → Uninstall.
+
 ## How It Works
 
-1. Click the ⬇ icon in your menu bar
+1. Click the ⬇ icon in your menu bar (Mac) or notification area (Windows)
 2. Click **Organize Now**
 3. Done, your files are sorted into neat categories
 
@@ -100,7 +118,7 @@ rm -f ~/Library/LaunchAgents/com.filedocket.organizer.plist ~/Library/LaunchAgen
 
 ## Auto-Organize
 
-Enable **Auto-Organize in Background** from the menu to have your files sorted automatically whenever new downloads arrive. Uses macOS `launchd`, no background process running all the time.
+Enable **Auto-Organize in Background** from the menu to have your files sorted automatically whenever new downloads arrive. Uses macOS `launchd` or Windows Task Scheduler.
 
 ## Custom Rules
 
@@ -128,26 +146,28 @@ Pro unlocks power tools for a one-time $8 payment:
 ## Building from Source
 
 ```bash
-# Install dependencies
+# macOS
 pip3 install rumps pyinstaller
-
-# Run the app directly
 python3 menu_bar.py
-
-# Build the .app + DMG (universal: Intel + Apple Silicon)
 ./build_macos_release.sh
+```
+
+```bat
+REM Windows
+pip install pystray pillow pyinstaller
+python windows_app.py
+build_windows_release.bat
 ```
 
 ## Tech Stack
 
-- **Python 3** + [rumps](https://github.com/jaredks/rumps) (macOS menu bar framework)
-- **PyInstaller** for self-contained .app bundles
-- **launchd** for background scheduling
-- **AppKit** for native macOS UI elements
+- **Python 3** + [rumps](https://github.com/jaredks/rumps) (macOS) / [pystray](https://github.com/moses-palmer/pystray) (Windows)
+- **PyInstaller** for self-contained bundles
+- **launchd** (Mac) and Task Scheduler (Windows) for background sorting
 
 ## Privacy
 
-FileDocket runs **entirely on your Mac**. No network requests, no analytics, no telemetry. Your files never leave your machine.
+FileDocket runs **entirely on your computer**. No network requests for organizing, no analytics, no telemetry. Your files never leave your machine.
 
 ## Support
 

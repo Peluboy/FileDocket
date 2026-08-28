@@ -12,6 +12,7 @@ these **one-click installers** instead (they embed their own Python runtime, so 
 | Platform | File to share | Build command |
 |---|---|---|
 | macOS | `dist/FileDocket.dmg` | `./build_macos_release.sh` |
+| Windows | `Output/FileDocket-Setup.exe` | `build_windows_release.bat` (Windows machine or GitHub Actions) |
 
 Key points:
 

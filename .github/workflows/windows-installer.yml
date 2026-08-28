@@ -1,0 +1,54 @@
+name: Windows installer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - windows_app.py
+      - organize_downloads.py
+      - organize.cmd
+      - FileDocket.iss
+      - build_windows_release.bat
+      - make_filedocket_ico.py
+      - status_iconTemplate.png
+      - status_iconTemplate@2x.png
+      - .github/workflows/windows-installer.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build Setup.exe
+        shell: pwsh
+        run: |
+          python make_filedocket_ico.py
+          python -m pip install -q pyinstaller pystray pillow
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name FileDocket --icon filedocket.ico --add-data "status_iconTemplate.png;." --hidden-import organize_downloads windows_app.py
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" FileDocket.iss
+          if (-not (Test-Path "Output\FileDocket-Setup.exe")) { throw "Setup.exe missing" }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FileDocket-Setup
+          path: Output/FileDocket-Setup.exe
+
+      - name: Publish download
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          gh release view windows-installer --json tagName 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create windows-installer --title "FileDocket for Windows" --notes "Unsigned installer. If SmartScreen appears: More info → Run anyway. Uninstall from Settings → Apps."
+          }
+          gh release upload windows-installer Output/FileDocket-Setup.exe --clobber

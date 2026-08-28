@@ -3,6 +3,12 @@
 # Does not delete ~/.file-organizer (settings, or a local git clone).
 set -euo pipefail
 
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  echo "This uninstall script is for macOS."
+  echo "Windows: Settings → Apps → FileDocket → Uninstall."
+  exit 1
+fi
+
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 APP="/Applications/FileDocket.app"
 UID_NUM="$(id -u)"

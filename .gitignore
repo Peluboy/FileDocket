@@ -11,6 +11,7 @@ build/
 dist/
 *.spec
 Output/
+filedocket.ico
 
 # Compiled binaries (distribute via GitHub Releases)
 DownloadsOrganizer.app/
@@ -47,7 +48,6 @@ LEMON_SQUEEZY_SETUP.md
 
 # Unneeded in public repo
 FileFlow.iss
-build_windows_release.bat
 docs/product-image.png
 icons/icon-pro-crown-template.png
 icons/pro-icon.icns

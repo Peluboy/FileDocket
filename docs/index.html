@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FileDocket — Organize your Downloads</title>
-  <meta name="description" content="FileDocket is a free macOS menu bar app that sorts your Downloads folder into Images, Documents, Audio, Video, and more. It only moves files. Every move can be undone.">
+  <meta name="description" content="FileDocket is a free Downloads organizer for macOS and Windows. It only moves files. Every move can be undone.">
   <meta property="og:title" content="FileDocket — Organize your Downloads">
-  <meta property="og:description" content="A free macOS menu bar app that sorts Downloads into Images, Documents, Audio, Video, and more.">
+  <meta property="og:description" content="A free Downloads organizer for macOS and Windows. It only moves files. Every move can be undone.">
   <meta property="og:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#000000">
@@ -495,10 +495,16 @@
       color: var(--muted);
       margin-top: 14px;
     }
-    .path-note code {
-      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    .os-block { margin-top: 40px; }
+    .os-heading {
       font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
+    .install-paths-one { grid-template-columns: 1fr; }
+    .install-paths-one .install-path { border-right: none; }
 
     /* Pricing table */
     .table-wrap { overflow-x: auto; }
@@ -641,7 +647,7 @@
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="https://github.com/peluboy/FileDocket">GitHub</a></li>
-        <li><a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download</a></li>
+        <li><a class="btn btn-solid" href="#how">Download</a></li>
       </ul>
     </div>
   </header>
@@ -649,14 +655,14 @@
   <main id="main">
     <div class="wrap hero">
       <div class="hero-copy">
-        <p class="eyebrow">macOS menu bar</p>
+        <p class="eyebrow">macOS and Windows</p>
         <h1>Organize your Downloads.</h1>
-        <p class="lede">FileDocket sits in the menu bar and sorts files into Images, Documents, Audio, Video, and the rest. It only moves files. Every move can be undone.</p>
+        <p class="lede">FileDocket sits in the menu bar on Mac and the notification area on Windows. It sorts files into Images, Documents, Audio, Video, and the rest. It only moves files. Every move can be undone.</p>
         <div class="cta-row">
           <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
-          <a class="btn btn-ghost btn-lg" href="#how">One-line install</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">Download for Windows</a>
         </div>
-        <p class="meta"><span>macOS 12+</span><span>Intel and Apple Silicon</span><span>No account</span></p>
+        <p class="meta"><span>macOS 12+</span><span>Windows 10+</span><span>No account</span></p>
       </div>
 
       <div class="frame hero-frame">
@@ -757,7 +763,7 @@
           <div class="cell">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
             <h3>Background, not a daemon</h3>
-            <p>Auto-Organize uses launchd. Nothing sits in RAM waiting for the next file.</p>
+            <p>Auto-Organize uses launchd on Mac and Task Scheduler on Windows. Nothing sits in RAM waiting for the next file.</p>
           </div>
           <div class="cell">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h16"/><circle cx="18" cy="12" r="2"/></svg>
@@ -781,25 +787,42 @@
     <section id="how" class="reveal">
       <div class="wrap">
         <p class="section-kicker">Setup</p>
-        <h2>Two ways to install.</h2>
-        <p class="section-lead">Download the DMG if you do not use Terminal. Or paste one command: it uses Homebrew when it is installed, and the DMG when it is not, then clears Gatekeeper so you do not need Open Anyway.</p>
-        <div class="install-paths">
-          <div class="install-path">
-            <p class="path-kicker">No Terminal · no Homebrew</p>
-            <h3>Download the DMG</h3>
-            <p>Open the file, drag FileDocket into Applications, then open it from there. This path does not install or require Homebrew.</p>
-            <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
-            <p class="path-note">If macOS blocks it: open once, click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>.</p>
-          </div>
-          <div class="install-path">
-            <p class="path-kicker">Terminal · one command</p>
-            <h3>Detects Homebrew for you</h3>
-            <p>If <code>brew</code> is on your Mac, it installs the cask. If not, it downloads the same DMG, copies the app to Applications, clears quarantine, and opens FileDocket.</p>
-            <div class="install">
-              <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
-              <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash">Copy</button>
+        <h2>Install FileDocket.</h2>
+        <p class="section-lead">macOS: download the DMG, or paste one command. Windows: download the Setup exe. The Terminal command is macOS only and does not apply to Windows.</p>
+
+        <div class="os-block" id="how-mac">
+          <p class="os-heading">macOS · Intel and Apple Silicon</p>
+          <div class="install-paths">
+            <div class="install-path">
+              <p class="path-kicker">No Terminal · no Homebrew</p>
+              <h3>Download the DMG</h3>
+              <p>Open the file, drag FileDocket into Applications, then open it from there. This path does not install or require Homebrew.</p>
+              <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
+              <p class="path-note">If macOS blocks it: open once, click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>.</p>
             </div>
-            <p class="path-note">Then click the FileDocket icon in the menu bar and choose Organize Now. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
+            <div class="install-path">
+              <p class="path-kicker">Mac Terminal · one command</p>
+              <h3>Detects Homebrew for you</h3>
+              <p>macOS only. If <code>brew</code> is on your Mac, it installs the cask. If not, it downloads the same DMG, copies the app to Applications, clears quarantine, and opens FileDocket.</p>
+              <div class="install">
+                <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
+                <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash">Copy</button>
+              </div>
+              <p class="path-note">Then click the FileDocket icon in the menu bar and choose Organize Now. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="os-block" id="how-win">
+          <p class="os-heading">Windows 10 and 11</p>
+          <div class="install-paths install-paths-one">
+            <div class="install-path">
+              <p class="path-kicker">No Terminal · no Homebrew</p>
+              <h3>Download the installer</h3>
+              <p>Double-click <code>FileDocket-Setup.exe</code>, then Next, Finish. FileDocket appears in the notification area. It does not use Homebrew or the Mac command above.</p>
+              <a class="btn btn-solid" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">Download for Windows</a>
+              <p class="path-note">If SmartScreen says Windows protected your PC: More info → Run anyway. Uninstall from Settings → Apps → FileDocket. Organized files are not deleted.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -875,15 +898,19 @@
       <div class="wrap">
         <p class="section-kicker">FAQ</p>
         <h2>Questions.</h2>
-        <p class="section-lead">The short version: it moves files on your Mac, the code is public, and first launch may need Open Anyway in System Settings.</p>
+        <p class="section-lead">The short version: it moves files on your computer, the code is public, and first launch may need a one-time OS prompt (Gatekeeper on Mac, SmartScreen on Windows).</p>
 
         <details>
           <summary>Is FileDocket safe?</summary>
           <p>It only moves files. It does not delete them. Every move is logged and can be undone. The source is on GitHub.</p>
         </details>
         <details>
-          <summary>What about the unidentified developer warning?</summary>
+          <summary>What about the unidentified developer warning on Mac?</summary>
           <p>On macOS Sequoia and later, open FileDocket once and click Done (not Move to Trash). Then System Settings → Privacy &amp; Security → Security → Open Anyway. That button only appears after a blocked open. Control-click → Open no longer works. If the button never shows, run <code>xattr -cr /Applications/FileDocket.app</code> and open the app again.</p>
+        </details>
+        <details>
+          <summary>Windows says SmartScreen protected my PC</summary>
+          <p>The Windows installer is not Microsoft-signed yet. Click More info, then Run anyway. That is a one-time prompt. After that, FileDocket is in the notification area (hidden icons if you do not see it).</p>
         </details>
         <details>
           <summary>Which folders does it organize?</summary>
@@ -891,7 +918,7 @@
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
-          <p>You do not need Homebrew. The one-line installer checks for it: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If <code>brew</code> is present, it installs the cask. If not, it uses the DMG. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>.</p>
+          <p>On macOS only. You do not need Homebrew. The one-line installer checks for it: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If <code>brew</code> is present, it installs the cask. If not, it uses the DMG. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>. Windows users should <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>.</p>
         </details>
         <details>
           <summary>brew says untrusted tap or the cask exists in multiple taps</summary>
@@ -899,14 +926,14 @@
         </details>
         <details>
           <summary>It says brew: command not found</summary>
-          <p>That is fine. You do not need Homebrew. Use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
+          <p>That command is macOS only. If you are on Windows, <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. On a Mac, you do not need Homebrew: use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
         </details>
         <details>
           <summary>How do I uninstall?</summary>
-          <p>Homebrew or the installer script: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>. Or <code>brew uninstall --cask peluboy/tap/filedocket</code>. Add <code>--zap</code> only on machines that are not a FileDocket source checkout. DMG install: quit FileDocket and drag it from Applications to Trash. Organized files are not deleted.</p>
+          <p>macOS: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>, or <code>brew uninstall --cask peluboy/tap/filedocket</code>, or drag FileDocket from Applications to Trash. Windows: Settings → Apps → FileDocket → Uninstall. Organized files are not deleted. Add brew <code>--zap</code> only on Macs that are not a FileDocket source checkout.</p>
         </details>
         <details>
-          <summary>Does anything leave my Mac?</summary>
+          <summary>Does anything leave my computer?</summary>
           <p>No analytics, no accounts for the free app. Organizing runs locally. Pro checkout goes through Lemon Squeezy.</p>
         </details>
       </div>
@@ -918,7 +945,7 @@
         <p>Free, open source, about ten seconds to install.</p>
         <div class="cta-row">
           <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
-          <a class="btn btn-ghost btn-lg" href="https://github.com/peluboy/FileDocket">GitHub</a>
+          <a class="btn btn-ghost btn-lg" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">Download for Windows</a>
         </div>
       </div>
     </section>
@@ -929,7 +956,8 @@
       <p>FileDocket · MIT · <a href="https://github.com/peluboy">Peluboy</a></p>
       <nav>
         <a href="https://github.com/peluboy/FileDocket">Source</a>
-        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Releases</a>
+        <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">Windows</a>
+        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">macOS</a>
         <a href="mailto:imulep2104@gmail.com">Support</a>
       </nav>
     </footer>

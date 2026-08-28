@@ -4,7 +4,9 @@
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
-  echo "FileDocket is a macOS app."
+  echo "This installer is for macOS."
+  echo "Windows: download FileDocket-Setup.exe from"
+  echo "https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe"
   exit 1
 fi
 
