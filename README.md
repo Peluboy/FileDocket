@@ -63,6 +63,30 @@ xattr -cr /Applications/FileDocket.app
 
 Then open FileDocket again. Homebrew installs already strip quarantine, so this step is often unnecessary.
 
+### Uninstall
+
+Homebrew:
+
+```bash
+brew uninstall --cask peluboy/tap/filedocket
+```
+
+To also remove settings and background agents:
+
+```bash
+brew uninstall --cask --zap peluboy/tap/filedocket
+```
+
+If you installed from the DMG: quit FileDocket from the menu bar, drag it from Applications to Trash, then run:
+
+```bash
+launchctl bootout "gui/$(id -u)/com.filedocket.organizer" 2>/dev/null
+launchctl bootout "gui/$(id -u)/com.filedocket.login" 2>/dev/null
+rm -f ~/Library/LaunchAgents/com.filedocket.organizer.plist ~/Library/LaunchAgents/com.filedocket.login.plist
+```
+
+`--zap` / deleting `~/.file-organizer` removes local settings. Organized files in Downloads stay where they are.
+
 ## How It Works
 
 1. Click the ⬇ icon in your menu bar

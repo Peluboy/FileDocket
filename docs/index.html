@@ -615,7 +615,7 @@
           <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
           <a class="btn btn-ghost btn-lg" href="#how">Install with Homebrew</a>
         </div>
-        <p class="meta"><span>macOS 12+</span><span>3 MB</span><span>No account</span></p>
+        <p class="meta"><span>macOS 12+</span><span>Intel and Apple Silicon</span><span>No account</span></p>
       </div>
 
       <div class="frame hero-frame">
@@ -862,6 +862,10 @@
         <details>
           <summary>It says brew: command not found</summary>
           <p>Homebrew is installed, but this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel), then the install command. You can also skip Homebrew and <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>.</p>
+        </details>
+        <details>
+          <summary>How do I uninstall?</summary>
+          <p>Homebrew: <code>brew uninstall --cask peluboy/tap/filedocket</code>. Add <code>--zap</code> to also remove settings and background agents. DMG install: quit FileDocket, drag it from Applications to Trash, then delete <code>~/Library/LaunchAgents/com.filedocket.organizer.plist</code> and <code>~/Library/LaunchAgents/com.filedocket.login.plist</code> if they exist. Organized files are not deleted.</p>
         </details>
         <details>
           <summary>Does anything leave my Mac?</summary>
