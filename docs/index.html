@@ -312,6 +312,84 @@
       display: block;
       background: rgba(255,255,255,0.16);
     }
+    .desk-icons {
+      position: absolute;
+      left: 32px;
+      top: 28px;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(2, 80px);
+      gap: 22px 20px;
+      pointer-events: none;
+    }
+    .desk-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      color: #f4f4f4;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.55);
+      letter-spacing: -0.01em;
+    }
+    .folder {
+      display: block;
+      width: 54px;
+      height: 40px;
+      position: relative;
+      border-radius: 3px 5px 6px 6px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.28);
+    }
+    .folder::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -8px;
+      width: 22px;
+      height: 12px;
+      border-radius: 4px 4px 0 0;
+      background: inherit;
+      filter: brightness(1.1);
+    }
+    .folder-images { background: linear-gradient(180deg, #7ec8ea, #3a9fd1); }
+    .folder-docs { background: linear-gradient(180deg, #8eb4e8, #4d7ec8); }
+    .folder-video { background: linear-gradient(180deg, #c9a0ea, #8b5fbf); }
+    .folder-archives { background: linear-gradient(180deg, #f0c07a, #d0893a); }
+    .desk-toast {
+      position: absolute;
+      left: 32px;
+      bottom: 86px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(300px, 46%);
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(28,28,30,0.72);
+      backdrop-filter: blur(28px) saturate(1.5);
+      -webkit-backdrop-filter: blur(28px) saturate(1.5);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #f2f2f2;
+      font-size: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      pointer-events: none;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+      animation: toast-in 0.5s 0.35s ease-out both;
+    }
+    .desk-toast svg {
+      width: 28px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .desk-toast strong { display: block; font-weight: 560; font-size: 13px; }
+    .desk-toast span { display: block; margin-top: 2px; color: #b8b8b8; }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
     .menu {
       position: absolute;
       top: 6px;
@@ -418,40 +496,37 @@
     .cell p { font-size: 14px; color: var(--muted); }
 
     /* Install */
+    #how .section-lead { margin-bottom: 28px; }
     .os-tabs {
-      display: flex;
-      gap: 2px;
-      margin: 8px 0 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      margin: 0 0 48px;
+      background: #0c0c0c;
+      border: 1px solid var(--line);
+      border-radius: 10px;
     }
     .os-tab {
       appearance: none;
-      background: none;
+      background: transparent;
       border: 0;
       color: var(--muted);
       font: inherit;
       font-size: 14px;
       font-weight: 500;
-      padding: 10px 16px 12px;
+      padding: 10px 22px;
+      min-width: 112px;
+      border-radius: 7px;
       cursor: pointer;
-      position: relative;
-      transition: color 0.25s ease-out;
+      transition: color 0.25s ease-out, background 0.25s ease-out;
     }
     .os-tab:hover { color: var(--fg); }
-    .os-tab[aria-selected="true"] { color: var(--fg); }
-    .os-tab[aria-selected="true"]::after {
-      content: "";
-      position: absolute;
-      left: 16px; right: 16px; bottom: 0;
-      height: 1.5px;
-      background: var(--accent);
-      transform-origin: left center;
-      animation: tab-line 0.28s ease-out;
+    .os-tab[aria-selected="true"] {
+      color: var(--fg);
+      background: #1a1a1a;
     }
-    .os-tab:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
-    @keyframes tab-line {
-      from { transform: scaleX(0.4); opacity: 0; }
-      to { transform: none; opacity: 1; }
-    }
+    .os-tab:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
     .os-panel[hidden] { display: none; }
     .os-panel.is-in { animation: panel-in 0.4s ease-out; }
     @keyframes panel-in {
@@ -461,41 +536,50 @@
     .howto {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 40px 48px;
+      gap: 20px;
+      align-items: stretch;
     }
     .howto-row {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      min-height: 240px;
+      padding: 28px 28px 32px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0a0a0a;
+    }
+    .howto-row > div:last-child {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
     .howto-num {
       font-size: 12px;
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       color: var(--accent);
-      padding-top: 5px;
+      margin-bottom: 20px;
     }
     .howto h3 {
       font-size: 17px;
       font-weight: 560;
       letter-spacing: -0.02em;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
-    .howto .install {
-      flex-wrap: wrap;
-      align-items: flex-start;
+    .howto p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
     }
-    .howto .install code {
-      white-space: pre-wrap;
-      word-break: break-all;
-      font-size: 12px;
-    }
+    .howto .btn { margin-top: 24px; align-self: flex-start; }
     .install {
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
       background: #0c0c0c;
-      padding: 10px 10px 10px 16px;
-      border-radius: 8px;
-      margin-top: 14px;
+      border: 1px solid var(--line);
+      padding: 12px 12px 12px 18px;
+      border-radius: 10px;
+      margin-top: 20px;
     }
     .install code {
       font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -506,7 +590,7 @@
     }
     .copy {
       flex-shrink: 0;
-      height: 32px; padding: 0 12px;
+      height: 36px; padding: 0 14px;
       background: transparent; color: var(--fg);
       border: 0;
       border-radius: var(--radius);
@@ -519,8 +603,9 @@
     .path-note {
       font-size: 13px;
       color: var(--muted);
-      margin-top: 28px;
-      max-width: 62ch;
+      margin-top: 36px;
+      max-width: 68ch;
+      line-height: 1.6;
     }
     .path-note code {
       font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -618,8 +703,8 @@
     footer a:hover { color: var(--fg); }
 
     @media (max-width: 1100px) {
-      .howto { grid-template-columns: 1fr; gap: 36px; }
-      .howto-row { display: grid; grid-template-columns: 36px 1fr; gap: 4px 16px; }
+      .howto { grid-template-columns: 1fr; gap: 16px; }
+      .howto-row { min-height: 0; }
     }
 
     @media (max-width: 860px) {
@@ -632,7 +717,14 @@
       .install code { white-space: normal; word-break: break-all; }
       .desk { height: 520px; }
       .menu { right: 8px; }
-      .howto-row { grid-template-columns: 28px 1fr; }
+      .desk-icons { grid-template-columns: 72px; gap: 16px; left: 16px; top: 20px; }
+      .desk-toast { left: 16px; width: min(240px, 52%); }
+      .os-tabs { width: 100%; }
+      .os-tab { flex: 1; min-width: 0; }
+    }
+
+    @media (max-width: 560px) {
+      .desk-icons, .desk-toast { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -770,6 +862,19 @@
           </div>
         </div>
         <div class="desk">
+          <div class="desk-icons" aria-hidden="true">
+            <div class="desk-icon"><i class="folder folder-images"></i>Images</div>
+            <div class="desk-icon"><i class="folder folder-docs"></i>Documents</div>
+            <div class="desk-icon"><i class="folder folder-video"></i>Video</div>
+            <div class="desk-icon"><i class="folder folder-archives"></i>Archives</div>
+          </div>
+          <div class="desk-toast" aria-hidden="true">
+            <svg viewBox="0 0 764.84 584.85"><use href="#logo"/></svg>
+            <div>
+              <strong>12 files organized</strong>
+              <span>Images · Documents · Video</span>
+            </div>
+          </div>
           <div class="menu is-open" id="app-menu" role="menu">
             <div class="mi dim" role="menuitem" aria-disabled="true">Last Run: 27m ago (0 moved)</div>
             <div class="menu-sep"></div>
@@ -871,10 +976,6 @@
               <div>
                 <h3>Or paste one command</h3>
                 <p>Uses Homebrew if <code>brew</code> is on your Mac. If not, it installs from the same DMG, then clears Gatekeeper and opens the app.</p>
-                <div class="install">
-                  <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
-                  <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install">Copy</button>
-                </div>
               </div>
             </div>
             <div class="howto-row">
@@ -884,6 +985,10 @@
                 <p>Click the FileDocket icon in the menu bar, then Organize Now. Add Desktop or any other folder from the menu when you want more than Downloads.</p>
               </div>
             </div>
+          </div>
+          <div class="install">
+            <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
+            <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install">Copy</button>
           </div>
           <p class="path-note">If macOS blocks first open: click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
         </div>
