@@ -5,7 +5,7 @@
 A free, open-source macOS menu bar app that sorts your messy Downloads folder into neat categories, Images, Documents, Audio, Video, Code, and more.
 
 ```
-export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket
+curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 ```
 
 ---
@@ -25,27 +25,24 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask pelu
 
 ## Install
 
-### Option 1: Homebrew (Recommended)
+**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
+
+**One command** (uses Homebrew if you have it, otherwise the DMG, then clears quarantine):
+
+```bash
+curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
+```
+
+**Homebrew only:**
 
 ```bash
 export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 brew install --cask peluboy/tap/filedocket
 ```
 
-Use the fully-qualified name (`peluboy/tap/filedocket`). Homebrew 6 will not load a third-party tap until that cask is trusted; installing it this way does that. If you already ran `brew tap peluboy/filedocket`, remove the duplicate first:
+If you already ran `brew tap peluboy/filedocket`, the installer untaps it. To do that yourself: `brew untap peluboy/filedocket`.
 
-```bash
-brew untap peluboy/filedocket
-brew install --cask peluboy/tap/filedocket
-```
-
-If you just installed Homebrew, either run the `export PATH=...` line above in the same window, or **open a new Terminal** so `brew` is on PATH. `brew: command not found` means the current session cannot see Homebrew yet. You can also skip Homebrew and use the DMG below.
-
-### Option 2: Direct Download
-
-1. Download the latest `.dmg` from [v1.2.2](https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg)
-2. Open the `.dmg` and drag **FileDocket** to your Applications folder
-3. Launch FileDocket from Applications
+macOS 12+, Intel and Apple Silicon.
 
 ### First launch (Gatekeeper)
 
@@ -65,7 +62,11 @@ Then open FileDocket again. Homebrew installs already strip quarantine, so this 
 
 ### Uninstall
 
-Homebrew:
+```bash
+curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash
+```
+
+Or Homebrew:
 
 ```bash
 brew uninstall --cask peluboy/tap/filedocket

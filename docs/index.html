@@ -741,12 +741,12 @@
       <div class="wrap">
         <p class="section-kicker">Setup</p>
         <h2>Three steps.</h2>
-        <p class="section-lead">Download the DMG or use Homebrew. First launch on current macOS may need Open Anyway in System Settings.</p>
+        <p class="section-lead">No Terminal: download the DMG. Terminal: one command that uses Homebrew if you have it, or the DMG if you do not, then clears Gatekeeper quarantine.</p>
         <div class="steps">
           <div class="step">
             <div class="step-num">01</div>
             <h3>Install</h3>
-            <p>Download the DMG, or run the Homebrew command below. Drag FileDocket into Applications. Both paths are supported.</p>
+            <p>Download the DMG with no Terminal, or paste the one-line installer below. It detects Homebrew for you.</p>
           </div>
           <div class="step">
             <div class="step-num">02</div>
@@ -760,10 +760,10 @@
           </div>
         </div>
         <div class="install">
-          <code id="brew-cmd">export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" &amp;&amp; brew install --cask peluboy/tap/filedocket</code>
-          <button class="copy" type="button" data-copy="export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH && brew install --cask peluboy/tap/filedocket">Copy</button>
+          <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
+          <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash">Copy</button>
         </div>
-        <p class="install-hint">Homebrew and the DMG are equal options. If brew is missing, open a new Terminal after installing Homebrew, or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>. Already tapped <code>peluboy/filedocket</code>? Run <code>brew untap peluboy/filedocket</code> first.</p>
+        <p class="install-hint">Prefer no Terminal? Use <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a> above, drag FileDocket into Applications, then run <code>xattr -cr /Applications/FileDocket.app</code> if macOS blocks it. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
       </div>
     </section>
 
@@ -853,7 +853,7 @@
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
-          <p>Yes. One command: <code>brew install --cask peluboy/tap/filedocket</code>. Homebrew 6 requires trusting third-party taps; the fully-qualified name does that. If you already tapped <code>peluboy/filedocket</code>, run <code>brew untap peluboy/filedocket</code> first. If you just installed Homebrew, prepend <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" &&</code>.</p>
+          <p>Yes. One command that uses Homebrew if it is installed, otherwise the DMG: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If you already tapped <code>peluboy/filedocket</code>, the script untaps it. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>.</p>
         </details>
         <details>
           <summary>brew says untrusted tap or the cask exists in multiple taps</summary>
@@ -865,7 +865,7 @@
         </details>
         <details>
           <summary>How do I uninstall?</summary>
-          <p>Homebrew: <code>brew uninstall --cask peluboy/tap/filedocket</code>. Add <code>--zap</code> to also remove settings and background agents. DMG install: quit FileDocket, drag it from Applications to Trash, then delete <code>~/Library/LaunchAgents/com.filedocket.organizer.plist</code> and <code>~/Library/LaunchAgents/com.filedocket.login.plist</code> if they exist. Organized files are not deleted.</p>
+          <p>Homebrew or the installer script: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>. Or <code>brew uninstall --cask peluboy/tap/filedocket</code>. Add <code>--zap</code> only on machines that are not a FileDocket source checkout. DMG install: quit FileDocket and drag it from Applications to Trash. Organized files are not deleted.</p>
         </details>
         <details>
           <summary>Does anything leave my Mac?</summary>
