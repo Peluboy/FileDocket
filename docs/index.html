@@ -461,6 +461,44 @@
       color: var(--muted);
       margin-top: 10px;
     }
+    .install-paths {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--line);
+      margin-top: 32px;
+    }
+    .install-path {
+      padding: 28px 24px;
+      border-right: 1px solid var(--line);
+    }
+    .install-path:last-child { border-right: none; }
+    .path-kicker {
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .install-path h3 {
+      font-size: 16px;
+      font-weight: 560;
+      margin-bottom: 8px;
+    }
+    .install-path > p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .install-path .install { margin-top: 16px; }
+    .install-path .install code { white-space: normal; word-break: break-all; }
+    .install-path .btn { margin-top: 16px; }
+    .path-note {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+    .path-note code {
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+    }
 
     /* Pricing table */
     .table-wrap { overflow-x: auto; }
@@ -562,6 +600,9 @@
       .step:last-child { border-bottom: none; }
       .nav-links a:not(.btn) { display: none; }
       .install { flex-direction: column; align-items: stretch; }
+      .install-paths { grid-template-columns: 1fr; }
+      .install-path { border-right: none; border-bottom: 1px solid var(--line); }
+      .install-path:last-child { border-bottom: none; }
       .desk { height: 580px; }
       .finder { display: none; }
       .nudge { display: none; }
@@ -613,7 +654,7 @@
         <p class="lede">FileDocket sits in the menu bar and sorts files into Images, Documents, Audio, Video, and the rest. It only moves files. Every move can be undone.</p>
         <div class="cta-row">
           <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
-          <a class="btn btn-ghost btn-lg" href="#how">Install with Homebrew</a>
+          <a class="btn btn-ghost btn-lg" href="#how">One-line install</a>
         </div>
         <p class="meta"><span>macOS 12+</span><span>Intel and Apple Silicon</span><span>No account</span></p>
       </div>
@@ -740,30 +781,27 @@
     <section id="how" class="reveal">
       <div class="wrap">
         <p class="section-kicker">Setup</p>
-        <h2>Three steps.</h2>
-        <p class="section-lead">No Terminal: download the DMG. Terminal: one command that uses Homebrew if you have it, or the DMG if you do not, then clears Gatekeeper quarantine.</p>
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">01</div>
-            <h3>Install</h3>
-            <p>Download the DMG with no Terminal, or paste the one-line installer below. It detects Homebrew for you.</p>
+        <h2>Two ways to install.</h2>
+        <p class="section-lead">Download the DMG if you do not use Terminal. Or paste one command: it uses Homebrew when it is installed, and the DMG when it is not, then clears Gatekeeper so you do not need Open Anyway.</p>
+        <div class="install-paths">
+          <div class="install-path">
+            <p class="path-kicker">No Terminal · no Homebrew</p>
+            <h3>Download the DMG</h3>
+            <p>Open the file, drag FileDocket into Applications, then open it from there. This path does not install or require Homebrew.</p>
+            <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a>
+            <p class="path-note">If macOS blocks it: open once, click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>.</p>
           </div>
-          <div class="step">
-            <div class="step-num">02</div>
-            <h3>Open the menu</h3>
-            <p>Click the FileDocket icon in the menu bar, then Organize Now.</p>
-          </div>
-          <div class="step">
-            <div class="step-num">03</div>
-            <h3>Done</h3>
-            <p>Files are sorted. The menu shows what moved. Undo if you need to.</p>
+          <div class="install-path">
+            <p class="path-kicker">Terminal · one command</p>
+            <h3>Detects Homebrew for you</h3>
+            <p>If <code>brew</code> is on your Mac, it installs the cask. If not, it downloads the same DMG, copies the app to Applications, clears quarantine, and opens FileDocket.</p>
+            <div class="install">
+              <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
+              <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash">Copy</button>
+            </div>
+            <p class="path-note">Then click the FileDocket icon in the menu bar and choose Organize Now. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
           </div>
         </div>
-        <div class="install">
-          <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
-          <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash">Copy</button>
-        </div>
-        <p class="install-hint">Prefer no Terminal? Use <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">Download for macOS</a> above, drag FileDocket into Applications, then run <code>xattr -cr /Applications/FileDocket.app</code> if macOS blocks it. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
       </div>
     </section>
 
@@ -853,15 +891,15 @@
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
-          <p>Yes. One command that uses Homebrew if it is installed, otherwise the DMG: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If you already tapped <code>peluboy/filedocket</code>, the script untaps it. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>.</p>
+          <p>You do not need Homebrew. The one-line installer checks for it: <code>curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>. If <code>brew</code> is present, it installs the cask. If not, it uses the DMG. Homebrew-only: <code>export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" && brew install --cask peluboy/tap/filedocket</code>.</p>
         </details>
         <details>
           <summary>brew says untrusted tap or the cask exists in multiple taps</summary>
-          <p>Homebrew 6 will not load a third-party tap until you trust it. Use the fully-qualified install command above. If you tapped both <code>peluboy/tap</code> and <code>peluboy/filedocket</code>, they are the same cask twice. Run <code>brew untap peluboy/filedocket</code>, then <code>brew install --cask peluboy/tap/filedocket</code>.</p>
+          <p>Homebrew 6 will not load a third-party tap until you trust it. Use the one-line installer, or <code>brew install --cask peluboy/tap/filedocket</code>. If you tapped both <code>peluboy/tap</code> and <code>peluboy/filedocket</code>, they are the same cask twice. Run <code>brew untap peluboy/filedocket</code>, then install again.</p>
         </details>
         <details>
           <summary>It says brew: command not found</summary>
-          <p>Homebrew is installed, but this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel), then the install command. You can also skip Homebrew and <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>.</p>
+          <p>That is fine. You do not need Homebrew. Use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
         </details>
         <details>
           <summary>How do I uninstall?</summary>
