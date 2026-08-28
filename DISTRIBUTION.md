@@ -32,7 +32,7 @@ how the binary is signed:
 
 | State | What the recipient experiences |
 |---|---|
-| **Ad-hoc signed** (current) | Scary "cannot be opened / unidentified developer" block. They must right-click ▸ Open, or strip quarantine manually. |
+| **Ad-hoc signed** (current) | Sequoia/Tahoe: "Not Opened" with Done / Move to Trash. Open Anyway lives in System Settings → Privacy & Security → Security after a blocked open. Or `xattr -cr /Applications/FileDocket.app`. |
 | **Signed + notarized** (goal) | Opens normally, no warning. This is what "signing" buys you. |
 
 Ad-hoc signing (what PyInstaller already did) only lets the binary *run locally*. It does **not**
@@ -44,10 +44,10 @@ help anyone who downloads it.
 
 You can distribute the ad-hoc binary as-is; recipients just need one of these the first time:
 
-- **Right-click the file ▸ Open ▸ Open** (the README already walks users through this), or
-- Strip the quarantine flag before running:
+- Open the app once, click **Done**, then **System Settings → Privacy & Security → Security → Open Anyway**, or
+- Strip the quarantine flag:
   ```bash
-  xattr -d com.apple.quarantine FileDocket-Mac
+  xattr -cr /Applications/FileDocket.app
   ```
 
 This is fine for friends/colleagues. It is not appropriate for wide/public distribution.

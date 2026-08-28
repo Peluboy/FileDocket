@@ -43,7 +43,7 @@ If you just installed Homebrew, either run the `export PATH=...` line above in t
 
 ### Option 2: Direct Download
 
-1. Download the latest `.dmg` from [v1.2.1](https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg)
+1. Download the latest `.dmg` from [v1.2.2](https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg)
 2. Open the `.dmg` and drag **FileDocket** to your Applications folder
 3. Launch FileDocket from Applications
 

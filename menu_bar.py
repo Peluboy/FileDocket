@@ -11,7 +11,7 @@ import organize_downloads
 import license as license_mod
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.1"
+APP_VERSION = "1.2.2"
 APP_AUTHOR = "Peluboy"
 
 # Icon paths for menu items
@@ -856,7 +856,9 @@ class FileDocketApp(rumps.App):
                                 "  Auto-Organize: sort new downloads automatically\n"
                                 "  Undo, Tools, Rules and more\n\n"
                                 "First launch? If macOS says FileDocket can't be "
-                                "opened, right-click it, then Open, then click Open.\n\n"
+                                "opened, click Done, then System Settings → "
+                                "Privacy & Security → Security → Open Anyway. "
+                                "Or run: xattr -cr /Applications/FileDocket.app\n\n"
                                 f"Made with love by {APP_AUTHOR}",
                     )
                     # Mark as greeted for THIS version only after the user
