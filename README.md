@@ -43,25 +43,25 @@ If you just installed Homebrew, either run the `export PATH=...` line above in t
 
 ### Option 2: Direct Download
 
-1. Download the latest `.dmg` from [v1.2.0](https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg)
+1. Download the latest `.dmg` from [v1.2.1](https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg)
 2. Open the `.dmg` and drag **FileDocket** to your Applications folder
 3. Launch FileDocket from Applications
 
 ### First launch (Gatekeeper)
 
-FileDocket is not notarized, so a double-click often shows *can't be opened* with no Open Anyway button. That is normal on current macOS.
+FileDocket is not notarized. On macOS Sequoia and later, a double-click shows *Not Opened* with only **Done** and **Move to Trash**. That is normal. Control-click → Open no longer bypasses Gatekeeper.
 
-**Fix (one-time), in this order:**
+**Fix (one-time):**
 
-1. In **Finder → Applications**, Control-click **FileDocket** → **Open** → **Open**.
-2. If the dialog only has **Done**, click Done, then **System Settings → Privacy & Security**, scroll to the bottom, and click **Open Anyway**. The button only appears after a blocked open.
-3. If Open Anyway still never shows:
+1. Open FileDocket once. Click **Done** (not Move to Trash).
+2. **System Settings → Privacy & Security**, scroll to **Security**, click **Open Anyway**, then authenticate. The button only appears after a blocked open.
+3. If Open Anyway never shows:
 
 ```bash
 xattr -cr /Applications/FileDocket.app
 ```
 
-Then Control-click → Open again.
+Then open FileDocket again. Homebrew installs already strip quarantine, so this step is often unnecessary.
 
 ## How It Works
 
@@ -107,11 +107,8 @@ pip3 install rumps pyinstaller
 # Run the app directly
 python3 menu_bar.py
 
-# Build the .app bundle
+# Build the .app + DMG (universal: Intel + Apple Silicon)
 ./build_macos_release.sh
-
-# Build universal (Intel + ARM)
-TARGET_ARCH=universal2 ./build_macos_release.sh
 ```
 
 ## Tech Stack

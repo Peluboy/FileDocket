@@ -11,7 +11,7 @@ import organize_downloads
 import license as license_mod
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.2.1"
 APP_AUTHOR = "Peluboy"
 
 # Icon paths for menu items

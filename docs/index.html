@@ -600,7 +600,7 @@
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="https://github.com/peluboy/FileDocket">GitHub</a></li>
-        <li><a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download</a></li>
+        <li><a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">Download</a></li>
       </ul>
     </div>
   </header>
@@ -612,8 +612,8 @@
         <h1>Organize your Downloads.</h1>
         <p class="lede">FileDocket sits in the menu bar and sorts files into Images, Documents, Audio, Video, and the rest. It only moves files. Every move can be undone.</p>
         <div class="cta-row">
-          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download for macOS</a>
-          <a class="btn btn-ghost btn-lg" href="https://github.com/peluboy/FileDocket">View source</a>
+          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">Download for macOS</a>
+          <a class="btn btn-ghost btn-lg" href="#how">Install with Homebrew</a>
         </div>
         <p class="meta"><span>macOS 12+</span><span>3 MB</span><span>No account</span></p>
       </div>
@@ -741,12 +741,12 @@
       <div class="wrap">
         <p class="section-kicker">Setup</p>
         <h2>Three steps.</h2>
-        <p class="section-lead">Install, click Organize Now, check the folders. Gatekeeper asks you to Open once on first launch.</p>
+        <p class="section-lead">Download the DMG or use Homebrew. First launch on current macOS may need Open Anyway in System Settings.</p>
         <div class="steps">
           <div class="step">
             <div class="step-num">01</div>
             <h3>Install</h3>
-            <p>Download the DMG, or install with Homebrew. Drag FileDocket into Applications.</p>
+            <p>Download the DMG, or run the Homebrew command below. Drag FileDocket into Applications. Both paths are supported.</p>
           </div>
           <div class="step">
             <div class="step-num">02</div>
@@ -763,7 +763,7 @@
           <code id="brew-cmd">export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH" &amp;&amp; brew install --cask peluboy/tap/filedocket</code>
           <button class="copy" type="button" data-copy="export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH && brew install --cask peluboy/tap/filedocket">Copy</button>
         </div>
-        <p class="install-hint">Just installed Homebrew? Use this as-is, or open a new Terminal window first. No Homebrew? <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download the DMG</a>.</p>
+        <p class="install-hint">Homebrew and the DMG are equal options. If brew is missing, open a new Terminal after installing Homebrew, or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">download the DMG</a>. Already tapped <code>peluboy/filedocket</code>? Run <code>brew untap peluboy/filedocket</code> first.</p>
       </div>
     </section>
 
@@ -824,7 +824,7 @@
               </tr>
               <tr class="table-cta">
                 <td></td>
-                <td><a class="btn btn-ghost" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download</a></td>
+                <td><a class="btn btn-ghost" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">Download</a></td>
                 <td><a class="btn btn-solid" href="https://peluboy.lemonsqueezy.com">Get Pro</a></td>
               </tr>
             </tbody>
@@ -837,7 +837,7 @@
       <div class="wrap">
         <p class="section-kicker">FAQ</p>
         <h2>Questions.</h2>
-        <p class="section-lead">The short version: it moves files on your Mac, the code is public, and first launch needs a right-click.</p>
+        <p class="section-lead">The short version: it moves files on your Mac, the code is public, and first launch may need Open Anyway in System Settings.</p>
 
         <details>
           <summary>Is FileDocket safe?</summary>
@@ -845,7 +845,7 @@
         </details>
         <details>
           <summary>What about the unidentified developer warning?</summary>
-          <p>Do not double-click. In Finder, Control-click FileDocket, choose Open, then Open again. If the dialog only has Done, click Done, then System Settings → Privacy &amp; Security, scroll to the bottom, and click Open Anyway. That button only appears after a blocked open. If it never shows, run <code>xattr -cr /Applications/FileDocket.app</code> and Control-click Open again.</p>
+          <p>On macOS Sequoia and later, open FileDocket once and click Done (not Move to Trash). Then System Settings → Privacy &amp; Security → Security → Open Anyway. That button only appears after a blocked open. Control-click → Open no longer works. If the button never shows, run <code>xattr -cr /Applications/FileDocket.app</code> and open the app again.</p>
         </details>
         <details>
           <summary>Which folders does it organize?</summary>
@@ -861,7 +861,7 @@
         </details>
         <details>
           <summary>It says brew: command not found</summary>
-          <p>Homebrew is installed, but this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel), then the install command. You can also skip Homebrew and <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">download the DMG</a>.</p>
+          <p>Homebrew is installed, but this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel), then the install command. You can also skip Homebrew and <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">download the DMG</a>.</p>
         </details>
         <details>
           <summary>Does anything leave my Mac?</summary>
@@ -875,7 +875,7 @@
         <h2>Start with Downloads.</h2>
         <p>Free, open source, about ten seconds to install.</p>
         <div class="cta-row">
-          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Download for macOS</a>
+          <a class="btn btn-solid btn-lg" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">Download for macOS</a>
           <a class="btn btn-ghost btn-lg" href="https://github.com/peluboy/FileDocket">GitHub</a>
         </div>
       </div>
@@ -887,7 +887,7 @@
       <p>FileDocket · MIT · <a href="https://github.com/peluboy">Peluboy</a></p>
       <nav>
         <a href="https://github.com/peluboy/FileDocket">Source</a>
-        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.0/FileDocket.dmg">Releases</a>
+        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.1/FileDocket.dmg">Releases</a>
         <a href="mailto:imulep2104@gmail.com">Support</a>
       </nav>
     </footer>

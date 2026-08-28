@@ -22,10 +22,10 @@
 #     "unidentified developer" warning the first time.
 #
 # ══ Usage ═══════════════════════════════════════════════════════════════════
-#   ./build_macos_release.sh              # builds .app + .dmg (ad-hoc sign)
+#   ./build_macos_release.sh              # universal2 .app + .dmg (ad-hoc sign)
 #   ./build_macos_release.sh --notarize   # also codesign + notarize (needs your
 #                                         #   Developer ID cert & notary profile)
-#   TARGET_ARCH=universal2 ./build_macos_release.sh   # universal (Intel+ARM)
+#   TARGET_ARCH=arm64 ./build_macos_release.sh        # Apple Silicon only
 #
 #   Overridables:
 #     NOTARY_PROFILE     keychain profile name (default "AC_NOTARY")
@@ -38,7 +38,8 @@ APP_NAME="FileDocket"
 VOL_NAME="FileDocket"
 DMG="FileDocket.dmg"
 DMG_OUT="dist/$DMG"
-TARGET_ARCH="${TARGET_ARCH:-arm64}"          # change to universal2 for Intel+ARM
+TARGET_ARCH="${TARGET_ARCH:-universal2}"
+export TARGET_ARCH
 
 DO_SIGN=0
 [[ "${1:-}" == "--notarize" ]] && DO_SIGN=1
