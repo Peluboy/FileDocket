@@ -18,6 +18,7 @@ from pathlib import Path
 import organize_downloads
 
 APP_NAME = "FileDocket"
+APP_VERSION = "1.2.4"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
 TASK_NAME = "FileDocket"
 STATE_FILE = Path.home() / ".file-organizer" / "last_run.json"
@@ -235,6 +236,7 @@ def start_tray() -> None:
         auto_on = task_exists()
         login_on = launch_at_login()
         return pystray.Menu(
+            Item(f"{APP_NAME} v{APP_VERSION}", None, enabled=False),
             Item(last_run_label(), None, enabled=False),
             pystray.Menu.SEPARATOR,
             Item("Organize Now", on_organize),

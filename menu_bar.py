@@ -12,13 +12,26 @@ import organize_downloads
 import license as license_mod
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.3"
+APP_VERSION = "1.2.4"
 APP_AUTHOR = "Peluboy"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
-# rumps.alert returns NSAlert.runModal() codes, not 0/1.
-_ALERT_OK = 1000
-_ALERT_CANCEL = 1001
-_ALERT_OTHER = 1002
+
+
+def _alert_choice(resp):
+    """Map rumps.alert / NSAlert.runModal() to ok, cancel, or other.
+
+    rumps uses the deprecated alertWithMessageText_ API, which returns
+    NSAlertDefaultReturn / Alternate / Other (1 / 0 / -1). The modern
+    NSAlert API returns 1000 / 1001 / 1002. Accept both so buttons work
+    on either path.
+    """
+    if resp in (1, 1000):
+        return "ok"
+    if resp in (0, 1001):
+        return "cancel"
+    if resp in (-1, 1002):
+        return "other"
+    return "unknown"
 
 # Icon paths for menu items
 def _icon(name):
@@ -915,7 +928,7 @@ class FileDocketApp(rumps.App):
                 ok="OK",
                 cancel="Deactivate"
             )
-            if resp != _ALERT_CANCEL:
+            if _alert_choice(resp) != "cancel":
                 return
             confirm = rumps.alert(
                 title="Deactivate Pro?",
@@ -927,7 +940,7 @@ class FileDocketApp(rumps.App):
                 ok="Deactivate",
                 cancel="Keep Pro"
             )
-            if confirm != _ALERT_OK:
+            if _alert_choice(confirm) != "ok":
                 return
             self._start_busy("Deactivating Pro…")
             rumps.notification(APP_NAME, "Deactivating Pro",
@@ -976,10 +989,11 @@ class FileDocketApp(rumps.App):
             cancel="Not now",
             other="Notify me"
         )
-        if resp == _ALERT_OTHER:
+        self._debug(f"pro dialog button={_alert_choice(resp)} raw={resp}")
+        if _alert_choice(resp) == "other":
             webbrowser.open(WAITLIST_URL)
             return
-        if resp != _ALERT_OK:
+        if _alert_choice(resp) != "ok":
             return
         w = rumps.Window(
             message="Paste your Pro license key:",
@@ -1051,7 +1065,7 @@ class FileDocketApp(rumps.App):
             ok="Copy Email",
             cancel="Close"
         )
-        if resp == _ALERT_OK:
+        if _alert_choice(resp) == "ok":
             subprocess.run(["pbcopy"], input=b"imulep2104@gmail.com")
 
     def quit_app(self, sender=None):
@@ -1200,7 +1214,7 @@ class FileDocketApp(rumps.App):
                            message="Move Installers/Archives older than 90 days "
                                    "into _Old_ folders? (Nothing is deleted.)",
                            ok="Archive", cancel="Cancel")
-        if resp != _ALERT_OK:
+        if _alert_choice(resp) != "ok":
             return
         def run():
             try:
@@ -1256,7 +1270,7 @@ class FileDocketApp(rumps.App):
                            message="Match files by extension (e.g. iso) or by a "
                                    "word in the name?",
                            ok="By extension", cancel="By name")
-        match = "suffix" if kind == _ALERT_OK else "keyword"
+        match = "suffix" if _alert_choice(kind) == "ok" else "keyword"
         label = "extension (type: iso, pdf, …)" if match == "suffix" \
             else "word in the name (e.g. invoice)"
         w1 = rumps.Window(message=f"Match on {label}",

@@ -33,7 +33,7 @@ curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 
 You do not need Homebrew. The Terminal command below is **macOS only**.
 
-**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
+**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.4/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
 
 **One command** (uses Homebrew if `brew` is present, otherwise the DMG, then clears quarantine):
 
