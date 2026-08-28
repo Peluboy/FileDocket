@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FileDocket — Sort the files that pile up</title>
-  <meta name="description" content="FileDocket sorts Downloads, Desktop, and any folder you add. macOS and Windows. It only moves files. Every move can be undone.">
-  <meta property="og:title" content="FileDocket — Sort the files that pile up">
-  <meta property="og:description" content="A free organizer for Downloads, Desktop, and any folder you add. macOS and Windows. It only moves files.">
+  <title>FileDocket — File Organizer for Mac and Windows</title>
+  <meta name="description" content="Free file organizer for macOS and Windows. FileDocket lives in the menu bar or tray and sorts Downloads, Desktop, and any folder into Images, Documents, Video, and more. It only moves files. Every move can be undone.">
+  <meta name="keywords" content="file organizer, downloads organizer, organize downloads folder, desktop file organizer, mac menu bar app, windows tray app, sort files by type, FileDocket">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="FileDocket — File Organizer for Mac and Windows">
+  <meta property="og:description" content="Sort Downloads, Desktop, and any folder. Menu bar on Mac, tray on Windows. Undo every move. Free, no account.">
   <meta property="og:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#000000">
@@ -15,12 +17,22 @@
   <meta property="og:url" content="https://peluboy.github.io/FileDocket/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_US">
-  <meta name="twitter:title" content="FileDocket — Sort the files that pile up">
-  <meta name="twitter:description" content="A free organizer for Downloads, Desktop, and any folder you add. macOS and Windows.">
+  <meta name="twitter:title" content="FileDocket — File Organizer for Mac and Windows">
+  <meta name="twitter:description" content="Sort Downloads, Desktop, and any folder. Menu bar on Mac, tray on Windows. Undo every move.">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
+  <meta property="og:site_name" content="FileDocket">
+  <meta name="application-name" content="FileDocket">
+  <link rel="sitemap" type="application/xml" href="https://peluboy.github.io/FileDocket/sitemap.xml">
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/geist@5.2.5/index.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WQYFK0YVYD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag("js", new Date());
+    gtag("config", "G-WQYFK0YVYD", { anonymize_ip: true });
+  </script>
   <script>
     (function () {
       var ua = navigator.userAgent || "";
@@ -41,7 +53,7 @@
       --panel: #0a0a0a;
       --accent: #00a8c4;
       --radius: 6px;
-      --max: 1160px;
+      --max: 1240px;
       --mx: 50%;
       --my: 18%;
     }
@@ -186,6 +198,7 @@
 
     /* Hero */
     .hero {
+      width: min(1400px, calc(100% - 32px));
       padding: 88px 0 80px;
       display: flex;
       flex-direction: column;
@@ -193,7 +206,7 @@
       text-align: center;
       gap: 48px;
     }
-    .hero-copy { max-width: 680px; }
+    .hero-copy { max-width: 760px; }
     .eyebrow {
       font-size: 12px;
       font-weight: 500;
@@ -230,7 +243,7 @@
     }
 
     /* Product frame — macOS desktop */
-    .hero-frame { width: 100%; max-width: 920px; }
+    .hero-frame { width: 100%; max-width: none; }
     .frame {
       border: 1px solid var(--line);
       border-radius: 10px;
@@ -250,7 +263,12 @@
     .menubar-left, .menubar-right {
       display: flex; align-items: center; gap: 12px;
     }
-    .apple { width: 12px; height: 14px; color: #fff; }
+    .apple {
+      width: 12px;
+      height: 16px;
+      flex-shrink: 0;
+      color: #fff;
+    }
     .status-glyphs {
       display: flex; align-items: center; gap: 8px; opacity: 0.85;
     }
@@ -272,45 +290,9 @@
     .tray:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
     .desk {
       position: relative;
-      height: 680px;
+      height: 720px;
       background: #0b1220 url("desktop.jpg") center / cover no-repeat;
     }
-    .finder {
-      position: absolute;
-      left: 28px; top: 36px;
-      z-index: 1;
-      width: min(380px, 46%);
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(28,28,30,0.72);
-      backdrop-filter: blur(24px) saturate(1.4);
-      -webkit-backdrop-filter: blur(24px) saturate(1.4);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #e8e8e8;
-      font-size: 12px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      pointer-events: none;
-    }
-    .finder-bar {
-      display: flex; align-items: center; gap: 6px;
-      height: 28px; padding: 0 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .tl { width: 8px; height: 8px; border-radius: 50%; }
-    .tl-r { background: #ff5f57; }
-    .tl-y { background: #febc2e; }
-    .tl-g { background: #28c840; }
-    .finder-bar span { margin-left: 8px; color: #c8c8c8; }
-    .finder-body { display: grid; grid-template-columns: 120px 1fr; min-height: 168px; }
-    .finder-side {
-      padding: 10px 8px;
-      border-right: 1px solid rgba(255,255,255,0.08);
-      color: #9a9a9a;
-    }
-    .finder-side div { padding: 4px 8px; border-radius: 4px; }
-    .finder-side .on { background: rgba(255,255,255,0.1); color: #fff; }
-    .finder-list { padding: 8px 12px; color: #d0d0d0; }
-    .finder-list div { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
     .dock {
       position: absolute;
       left: 50%; bottom: 14px;
@@ -329,30 +311,6 @@
       width: 28px; height: 28px; border-radius: 7px;
       display: block;
       background: rgba(255,255,255,0.16);
-    }
-    .nudge {
-      position: absolute;
-      top: 18px;
-      right: 292px;
-      z-index: 2;
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(12,12,12,0.5);
-      backdrop-filter: blur(18px) saturate(1.4);
-      -webkit-backdrop-filter: blur(18px) saturate(1.4);
-      border: 1px solid rgba(255,255,255,0.16);
-      color: #fff;
-      font-size: 12px;
-      letter-spacing: -0.01em;
-      white-space: nowrap;
-      animation: nudge-in 0.5s 0.45s ease-out both;
-      pointer-events: none;
-    }
-    .nudge svg { width: 22px; height: 22px; color: var(--accent); }
-    @keyframes nudge-in {
-      from { opacity: 0; transform: translate(6px, 6px); }
-      to { opacity: 1; transform: none; }
     }
     .menu {
       position: absolute;
@@ -502,12 +460,13 @@
     }
     .howto {
       display: grid;
-      gap: 36px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px 48px;
     }
     .howto-row {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 4px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
     .howto-num {
       font-size: 12px;
@@ -522,8 +481,15 @@
       letter-spacing: -0.02em;
       margin-bottom: 6px;
     }
-    .howto p { font-size: 14px; color: var(--muted); }
-    .howto .btn { margin-top: 14px; }
+    .howto .install {
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .howto .install code {
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-size: 12px;
+    }
     .install {
       display: flex; align-items: center; justify-content: space-between; gap: 16px;
       background: #0c0c0c;
@@ -560,79 +526,6 @@
       font-family: ui-monospace, "SF Mono", Menlo, monospace;
       font-size: 12px;
     }
-    .setup-split {
-      display: grid;
-      grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
-      gap: 48px 56px;
-      align-items: start;
-    }
-    .setup-stage {
-      position: relative;
-      min-height: 440px;
-    }
-    .viz {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(8px);
-      transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    }
-    html[data-tab="mac"] .viz-mac,
-    html[data-tab="win"] .viz-win {
-      opacity: 1;
-      pointer-events: none;
-      transform: none;
-    }
-    .viz-card {
-      width: 100%;
-      max-width: 420px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(28,28,30,0.72), rgba(16,16,18,0.88));
-      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
-      overflow: hidden;
-      text-align: left;
-    }
-    .viz-bar {
-      display: flex; align-items: center; gap: 6px;
-      height: 36px; padding: 0 12px;
-      color: #c8c8c8; font-size: 12px;
-      background: rgba(255,255,255,0.04);
-    }
-    .viz-bar i { width: 8px; height: 8px; border-radius: 50%; display: block; }
-    .viz-bar .r { background: #ff5f57; }
-    .viz-bar .y { background: #febc2e; }
-    .viz-bar .g { background: #28c840; }
-    .viz-body { padding: 22px 20px 24px; }
-    .viz-row {
-      display: flex; align-items: center; gap: 14px;
-      padding: 12px 0;
-    }
-    .viz-ico {
-      width: 44px; height: 44px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,168,196,0.12); color: var(--accent);
-      font-size: 22px;
-      flex-shrink: 0;
-    }
-    .viz-ico.ph { width: 44px; height: 44px; line-height: 44px; text-align: center; margin: 0; }
-    .viz-row strong { display: block; font-size: 14px; font-weight: 560; }
-    .viz-row span { display: block; font-size: 12px; color: var(--muted); }
-    .viz-hint {
-      margin-top: 8px; padding-top: 16px;
-      font-size: 12px; color: var(--muted);
-    }
-    .viz-win-taskbar {
-      display: flex; align-items: center; justify-content: flex-end;
-      gap: 10px; height: 40px; padding: 0 14px;
-      background: rgba(0,0,0,0.35);
-      color: #ddd; font-size: 12px;
-    }
-    .viz-win-taskbar .ph { font-size: 16px; color: var(--accent); }
-
     /* Pricing table */
     .table-wrap { overflow-x: auto; }
     table {
@@ -704,9 +597,16 @@
     }
 
     /* Close */
-    .close { text-align: center; }
+    .close { text-align: center; padding: 96px 0 80px; }
+    .close h2 {
+      font-size: clamp(40px, 5vw, 64px);
+      letter-spacing: -0.045em;
+      margin-bottom: 16px;
+    }
     .close h2, .close p { margin-left: auto; margin-right: auto; }
-    .close p { color: var(--muted); margin-bottom: 24px; max-width: 42ch; }
+    .close p { color: var(--muted); margin-bottom: 32px; max-width: 42ch; font-size: 18px; }
+    .close .cta-row { gap: 12px; }
+    .close .btn-lg { height: 48px; padding: 0 22px; font-size: 16px; }
 
     footer {
       padding: 28px 0 48px;
@@ -717,6 +617,11 @@
     footer a { text-decoration: none; transition: color 0.3s ease-out; }
     footer a:hover { color: var(--fg); }
 
+    @media (max-width: 1100px) {
+      .howto { grid-template-columns: 1fr; gap: 36px; }
+      .howto-row { display: grid; grid-template-columns: 36px 1fr; gap: 4px 16px; }
+    }
+
     @media (max-width: 860px) {
       .hero { padding: 48px 0 36px; }
       h1 { font-size: clamp(40px, 12vw, 56px); }
@@ -726,12 +631,8 @@
       .install { flex-direction: column; align-items: stretch; }
       .install code { white-space: normal; word-break: break-all; }
       .desk { height: 520px; }
-      .finder { display: none; }
-      .nudge { display: none; }
       .menu { right: 8px; }
       .howto-row { grid-template-columns: 28px 1fr; }
-      .setup-split { grid-template-columns: 1fr; }
-      .setup-stage { min-height: 320px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -750,13 +651,59 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "FileDocket",
+    "alternateName": ["File Docket", "Downloads organizer"],
     "url": "https://peluboy.github.io/FileDocket/",
     "image": "https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png",
-    "description": "FileDocket sorts Downloads, Desktop, and any folder you add. It only moves files. Every move can be undone.",
+    "description": "Free file organizer for macOS and Windows. Sorts Downloads, Desktop, and any folder into Images, Documents, Video, and more. It only moves files. Every move can be undone.",
     "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "macOS 12, Windows 10",
+    "operatingSystem": "macOS 12+, Windows 10+",
+    "softwareVersion": "1.2.2",
+    "downloadUrl": [
+      "https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg",
+      "https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe"
+    ],
+    "featureList": [
+      "Organize Downloads, Desktop, and any folder",
+      "Auto-categorize into Images, Documents, Audio, Video, Archives, Code, Fonts, and Installers",
+      "Undo every move",
+      "Custom rules",
+      "macOS menu bar and Windows tray"
+    ],
+    "keywords": "file organizer, downloads organizer, organize downloads folder, desktop file organizer, mac menu bar, windows tray",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "author": { "@type": "Person", "name": "Peluboy", "url": "https://github.com/peluboy" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is FileDocket a file organizer for Mac and Windows?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. FileDocket is a free file organizer that lives in the macOS menu bar and the Windows tray. It sorts Downloads, Desktop, and any folder you add."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does FileDocket delete files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. FileDocket only moves files. Every move is logged and can be undone. The source is on GitHub."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which folders does FileDocket organize?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Downloads by default. Add Desktop, Documents, or any other folder in the app. Free includes one extra folder. Pro has no limit."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -792,8 +739,8 @@
   <main id="main">
     <div class="wrap hero">
       <div class="hero-copy">
-        <p class="eyebrow">macOS and Windows</p>
-        <h1>Loose files, sorted.</h1>
+        <p class="eyebrow">File organizer for Mac and Windows</p>
+        <h1>Sort Downloads. Keep every file.</h1>
         <p class="lede">FileDocket lives in the menu bar on Mac and the tray on Windows. It sorts Downloads, Desktop, and any folder you add — Images, Documents, Video, and the rest. It only moves files. Every move can be undone.</p>
         <div class="cta-row">
           <a class="btn btn-solid btn-lg dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
@@ -806,7 +753,7 @@
       <div class="frame hero-frame">
         <div class="menubar">
           <div class="menubar-left">
-            <svg class="apple" viewBox="0 0 17 17" aria-hidden="true"><path fill="currentColor" d="M11.4 9c0-2.4 2-3.6 2.1-3.6-1.2-1.7-3-1.9-3.6-1.9-1.5-.2-3 .9-3.7.9s-2-.9-3.3-.9C1.3 3.5-.2 4.8.6 7.4c.8 2.6 2.3 5.7 4.1 5.7 1 0 1.7-.7 3.2-.7s2 .7 3.3.7c1.4 0 2.2-2.6 3-5.1-2-.8-2.8-2.3-2.8-2zM9.3 2.2c.6-.7 1-1.7.9-2.7-1 .1-2.1.7-2.7 1.5-.6.7-1.1 1.7-.9 2.6 1.1.1 2.1-.6 2.7-1.4z"/></svg>
+            <svg class="apple" viewBox="0 0 384 512" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
             <span>Finder</span>
             <span>File</span>
             <span>Edit</span>
@@ -823,31 +770,6 @@
           </div>
         </div>
         <div class="desk">
-          <div class="finder" aria-hidden="true">
-            <div class="finder-bar">
-              <i class="tl tl-r"></i><i class="tl tl-y"></i><i class="tl tl-g"></i>
-              <span>Downloads</span>
-            </div>
-            <div class="finder-body">
-              <div class="finder-side">
-                <div>Recents</div>
-                <div class="on">Downloads</div>
-                <div>Desktop</div>
-                <div>Documents</div>
-              </div>
-              <div class="finder-list">
-                <div>IMG_2048.png</div>
-                <div>invoice-march.pdf</div>
-                <div>demo.mov</div>
-                <div>archive.zip</div>
-                <div>Installer.dmg</div>
-              </div>
-            </div>
-          </div>
-          <div class="nudge">
-            Downloads, Desktop, any folder
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M9 6h9v9"/></svg>
-          </div>
           <div class="menu is-open" id="app-menu" role="menu">
             <div class="mi dim" role="menuitem" aria-disabled="true">Last Run: 27m ago (0 moved)</div>
             <div class="menu-sep"></div>
@@ -887,7 +809,7 @@
       <div class="wrap">
         <p class="section-kicker">Product</p>
         <h2>Sort files. Keep them.</h2>
-        <p class="section-lead">Downloads by default. Desktop, Documents, or any folder you add. Categories for Images, Documents, Audio, Video, Archives, Code, Fonts, and Installers.</p>
+        <p class="section-lead">Downloads by default. Desktop, Documents, or any folder you add. A file organizer with categories for Images, Documents, Audio, Video, Archives, Code, Fonts, and Installers.</p>
         <div class="grid">
           <div class="cell">
             <i class="ph ph-folders ico" aria-hidden="true"></i>
@@ -934,107 +856,64 @@
           <button class="os-tab" type="button" role="tab" id="tab-win" aria-controls="panel-win" data-os="win">Windows</button>
         </div>
 
-        <div class="setup-split">
-          <div class="setup-steps">
-            <div class="os-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
-              <div class="howto">
-                <div class="howto-row">
-                  <div class="howto-num">01</div>
-                  <div>
-                    <h3>Download the DMG</h3>
-                    <p>Open it, drag FileDocket into Applications, then open it from there. No Homebrew, no Terminal.</p>
-                    <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
-                  </div>
-                </div>
-                <div class="howto-row">
-                  <div class="howto-num">02</div>
-                  <div>
-                    <h3>Or paste one command</h3>
-                    <p>Uses Homebrew if <code>brew</code> is on your Mac. If not, it installs from the same DMG, then clears Gatekeeper and opens the app.</p>
-                    <div class="install">
-                      <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
-                      <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install">Copy</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="howto-row">
-                  <div class="howto-num">03</div>
-                  <div>
-                    <h3>Organize</h3>
-                    <p>Click the FileDocket icon in the menu bar, then Organize Now. Add Desktop or any other folder from the menu when you want more than Downloads.</p>
-                  </div>
-                </div>
+        <div class="os-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
+          <div class="howto">
+            <div class="howto-row">
+              <div class="howto-num">01</div>
+              <div>
+                <h3>Download the DMG</h3>
+                <p>Open it, drag FileDocket into Applications, then open it from there. No Homebrew, no Terminal.</p>
+                <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
               </div>
-              <p class="path-note">If macOS blocks first open: click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
             </div>
-
-            <div class="os-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
-              <div class="howto">
-                <div class="howto-row">
-                  <div class="howto-num">01</div>
-                  <div>
-                    <h3>Download the installer</h3>
-                    <p>Double-click FileDocket-Setup.exe, then Next, Finish. No Terminal, no Homebrew.</p>
-                    <a class="btn btn-solid" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download for Windows</a>
-                  </div>
-                </div>
-                <div class="howto-row">
-                  <div class="howto-num">02</div>
-                  <div>
-                    <h3>Find it in the tray</h3>
-                    <p>FileDocket sits in the notification area. Click Show hidden icons if you do not see it, then Organize Now. Add Desktop or any other folder from the menu.</p>
-                  </div>
-                </div>
-                <div class="howto-row">
-                  <div class="howto-num">03</div>
-                  <div>
-                    <h3>Optional: auto-organize</h3>
-                    <p>The installer can run every 15 minutes and launch at sign-in. Uninstall from Settings → Apps → FileDocket. Organized files stay put.</p>
-                  </div>
-                </div>
-              </div>
-              <p class="path-note">If SmartScreen appears: More info → Run anyway. That is a one-time prompt. The Mac command above will not work on Windows.</p>
-            </div>
-          </div>
-
-          <div class="setup-stage" aria-hidden="true">
-            <div class="viz viz-mac">
-              <div class="viz-card">
-                <div class="viz-bar"><i class="r"></i><i class="y"></i><i class="g"></i><span>FileDocket.dmg</span></div>
-                <div class="viz-body">
-                  <div class="viz-row">
-                    <i class="ph ph-app-window viz-ico"></i>
-                    <div><strong>FileDocket.app</strong><span>Drag into Applications</span></div>
-                  </div>
-                  <div class="viz-row">
-                    <i class="ph ph-squares-four viz-ico"></i>
-                    <div><strong>Applications</strong><span>Intel and Apple Silicon</span></div>
-                  </div>
-                  <p class="viz-hint">Then click the menu bar icon and Organize Now.</p>
+            <div class="howto-row">
+              <div class="howto-num">02</div>
+              <div>
+                <h3>Or paste one command</h3>
+                <p>Uses Homebrew if <code>brew</code> is on your Mac. If not, it installs from the same DMG, then clears Gatekeeper and opens the app.</p>
+                <div class="install">
+                  <code id="brew-cmd">curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash</code>
+                  <button class="copy" type="button" data-copy="curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash" data-track="copy_install">Copy</button>
                 </div>
               </div>
             </div>
-            <div class="viz viz-win">
-              <div class="viz-card">
-                <div class="viz-bar"><span>FileDocket Setup</span></div>
-                <div class="viz-body">
-                  <div class="viz-row">
-                    <i class="ph ph-download-simple viz-ico"></i>
-                    <div><strong>FileDocket-Setup.exe</strong><span>Next, then Finish</span></div>
-                  </div>
-                  <div class="viz-row">
-                    <i class="ph ph-tray viz-ico"></i>
-                    <div><strong>Notification area</strong><span>Show hidden icons if needed</span></div>
-                  </div>
-                  <p class="viz-hint">SmartScreen: More info → Run anyway.</p>
-                </div>
-                <div class="viz-win-taskbar">
-                  <i class="ph ph-tray"></i>
-                  <span>FileDocket</span>
-                </div>
+            <div class="howto-row">
+              <div class="howto-num">03</div>
+              <div>
+                <h3>Organize</h3>
+                <p>Click the FileDocket icon in the menu bar, then Organize Now. Add Desktop or any other folder from the menu when you want more than Downloads.</p>
               </div>
             </div>
           </div>
+          <p class="path-note">If macOS blocks first open: click Done, then System Settings → Privacy &amp; Security → Open Anyway. Or run <code>xattr -cr /Applications/FileDocket.app</code>. Uninstall: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code></p>
+        </div>
+
+        <div class="os-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
+          <div class="howto">
+            <div class="howto-row">
+              <div class="howto-num">01</div>
+              <div>
+                <h3>Download the installer</h3>
+                <p>Double-click FileDocket-Setup.exe, then Next, Finish. No Terminal, no Homebrew.</p>
+                <a class="btn btn-solid" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download for Windows</a>
+              </div>
+            </div>
+            <div class="howto-row">
+              <div class="howto-num">02</div>
+              <div>
+                <h3>Find it in the tray</h3>
+                <p>FileDocket sits in the notification area. Click Show hidden icons if you do not see it, then Organize Now. Add Desktop or any other folder from the menu.</p>
+              </div>
+            </div>
+            <div class="howto-row">
+              <div class="howto-num">03</div>
+              <div>
+                <h3>Optional: auto-organize</h3>
+                <p>The installer can run every 15 minutes and launch at sign-in. Uninstall from Settings → Apps → FileDocket. Organized files stay put.</p>
+              </div>
+            </div>
+          </div>
+          <p class="path-note">If SmartScreen appears: More info → Run anyway. That is a one-time prompt. The Mac command above will not work on Windows.</p>
         </div>
       </div>
     </section>
@@ -1115,6 +994,10 @@
         <p class="section-lead">The short version: it moves files on your computer, the code is public, and first launch may need a one-time OS prompt (Gatekeeper on Mac, SmartScreen on Windows).</p>
 
         <details>
+          <summary>Is FileDocket a file organizer for Mac and Windows?</summary>
+          <p>Yes. FileDocket is a free file organizer for the Downloads folder, Desktop, and any folder you add. It lives in the macOS menu bar and the Windows tray. It only moves files. Every move can be undone.</p>
+        </details>
+        <details>
           <summary>Is FileDocket safe?</summary>
           <p>It only moves files. It does not delete them. Every move is logged and can be undone. The source is on GitHub.</p>
         </details>
@@ -1128,7 +1011,7 @@
         </details>
         <details>
           <summary>Which folders does it organize?</summary>
-          <p>Downloads by default. Add Desktop, Documents, or any other folder in the app. Free includes one extra. Pro has no limit.</p>
+          <p>Downloads by default — it is a Downloads organizer first. Add Desktop, Documents, or any other folder in the app. Free includes one extra. Pro has no limit.</p>
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
@@ -1180,9 +1063,8 @@
 
   <script>
     (function () {
-      // Paste a GA4 Measurement ID (G-XXXXXXXX) to enable visitor + download events.
       // Pro checkout is not tracked here — Lemon Squeezy owns that.
-      var GA_ID = "";
+      var GA_ID = "G-WQYFK0YVYD";
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var os = document.documentElement.dataset.os === "win" ? "win" : "mac";
 
@@ -1191,7 +1073,7 @@
         window.gtag("event", name, params || {});
       }
 
-      if (GA_ID) {
+      if (GA_ID && typeof window.gtag !== "function") {
         window.dataLayer = window.dataLayer || [];
         window.gtag = function () { window.dataLayer.push(arguments); };
         window.gtag("js", new Date());
