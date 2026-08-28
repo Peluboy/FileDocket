@@ -47,8 +47,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
+          $ver = (Select-String -Path FileDocket.iss -Pattern 'MyAppVersion "([^"]+)"').Matches[0].Groups[1].Value
+          $notes = "Unsigned installer. If SmartScreen appears: More info, then Run anyway. Uninstall from Settings, Apps."
           gh release view windows-installer --json tagName 2>$null
           if ($LASTEXITCODE -ne 0) {
-            gh release create windows-installer --title "FileDocket for Windows" --notes "Unsigned installer. If SmartScreen appears: More info → Run anyway. Uninstall from Settings → Apps."
+            gh release create windows-installer --title "FileDocket $ver for Windows" --notes $notes
           }
           gh release upload windows-installer Output/FileDocket-Setup.exe --clobber
+
+          curl.exe -fsSL -o FileDocket.dmg "https://github.com/Peluboy/homebrew-tap/raw/v$ver/FileDocket.dmg"
+          gh release view "v$ver" --json tagName 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create "v$ver" --title "FileDocket $ver" --latest --notes "Mac DMG and Windows Setup.exe. Pro dialog buttons work on macOS."
+          }
+          gh release upload "v$ver" Output/FileDocket-Setup.exe FileDocket.dmg --clobber
+          gh release edit "v$ver" --latest=true
