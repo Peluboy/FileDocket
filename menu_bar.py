@@ -4,6 +4,7 @@ import time
 import json
 import subprocess
 import threading
+import webbrowser
 from pathlib import Path
 from datetime import datetime
 import rumps
@@ -11,8 +12,13 @@ import organize_downloads
 import license as license_mod
 
 APP_NAME = "FileDocket"
-APP_VERSION = "1.2.2"
+APP_VERSION = "1.2.3"
 APP_AUTHOR = "Peluboy"
+WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
+# rumps.alert returns NSAlert.runModal() codes, not 0/1.
+_ALERT_OK = 1000
+_ALERT_CANCEL = 1001
+_ALERT_OTHER = 1002
 
 # Icon paths for menu items
 def _icon(name):
@@ -890,21 +896,13 @@ class FileDocketApp(rumps.App):
     # ---- Pro / License ----------------------------------------------------
 
     def _require_pro(self, feature_name=None):
-        """Return True if Pro is active, else show an upgrade prompt and return False."""
+        """Return True if Pro is active, else show upgrade (Enter Key + waitlist)."""
         if license_mod.is_pro():
             return True
-        title = f"Pro Feature"
-        msg = (f"{feature_name} is a Pro feature.\n\n"
-               f"Upgrade to FileDocket Pro for $8 (one-time) to unlock:\n\n"
-               f"  Duplicate Finder\n"
-               f"  Deep Scan\n"
-               f"  Archive Old Files\n"
-               f"  Unlimited Rules and Folders\n\n"
-               f"Click Get Pro in the menu to learn more.")
-        rumps.alert(title=title, message=msg)
+        self.show_get_pro(feature_prompt=feature_name)
         return False
 
-    def show_get_pro(self, sender=None):
+    def show_get_pro(self, sender=None, feature_prompt=None):
         """Show the Pro upgrade dialog with license activation."""
         if license_mod.is_pro():
             info = license_mod.get_license_info()
@@ -917,67 +915,116 @@ class FileDocketApp(rumps.App):
                 ok="OK",
                 cancel="Deactivate"
             )
-            if resp == 0:  # Cancel = Deactivate
-                confirm = rumps.alert(
-                    title="Deactivate Pro?",
-                    message="This will remove Pro from this Mac and free up the activation slot.\n\n"
-                            "You can re-activate later with the same key.",
-                    ok="Deactivate",
-                    cancel="Keep Pro"
-                )
-                if confirm == 0:  # OK = Deactivate
+            if resp != _ALERT_CANCEL:
+                return
+            confirm = rumps.alert(
+                title="Deactivate Pro?",
+                message="This will remove Pro from this Mac and free the activation "
+                        "slot on Lemon Squeezy.\n\n"
+                        "After you click Deactivate, wait for the menu bar spinner. "
+                        "That can take a few seconds. You can re-activate later with "
+                        "the same key.",
+                ok="Deactivate",
+                cancel="Keep Pro"
+            )
+            if confirm != _ALERT_OK:
+                return
+            self._start_busy("Deactivating Pro…")
+            rumps.notification(APP_NAME, "Deactivating Pro",
+                               "Talking to Lemon Squeezy. Wait for the spinner to stop.")
+
+            def run():
+                try:
                     result = license_mod.deactivate_license()
+                except Exception as e:
+                    result = {"deactivated": False, "error": str(e)}
+
+                def done():
+                    self._stop_busy()
                     if result.get("deactivated"):
-                        rumps.alert(title="Pro Deactivated",
-                                    message="FileDocket Pro has been removed from this Mac.")
+                        rumps.alert(
+                            title="Pro Deactivated",
+                            message="FileDocket Pro has been removed from this Mac."
+                        )
                         self.get_pro_item.title = "Pro"
                         self._build_tools_menu()
                     else:
-                        rumps.alert(title="Deactivation Failed",
-                                    message=result.get("error", "Could not deactivate."))
+                        rumps.alert(
+                            title="Deactivation Failed",
+                            message=result.get("error", "Could not deactivate.")
+                        )
+                self._post_ui(done)
+
+            threading.Thread(target=run, daemon=True).start()
             return
 
+        lead = ""
+        if feature_prompt:
+            lead = f"{feature_prompt} is a Pro feature.\n\n"
         resp = rumps.alert(
             title="FileDocket Pro, $8 one-time",
-            message="Unlock power tools:\n\n"
+            message=lead +
+                    "Unlock power tools:\n\n"
                     "  Duplicate Finder: find and clean up duplicates\n"
                     "  Deep Scan: look inside organized folders\n"
                     "  Archive Old Files: auto-move old installers\n"
                     "  Unlimited Rules and Folders\n\n"
-                    "Buy a license key at:\n"
-                    f"{license_mod.get_checkout_url()}\n\n"
-                    "Then enter your key below.",
+                    "Checkout is not open yet. If you already have a license key, "
+                    "choose Enter Key.\n\n"
+                    "Notify me opens the waitlist on the site.",
             ok="Enter Key",
-            cancel="Not Now"
+            cancel="Not now",
+            other="Notify me"
         )
-        if resp:
-            w = rumps.Window(
-                message="Paste your Pro license key:",
-                title="Activate FileDocket Pro",
-                default_text="",
-                dimensions=(360, 32)
-            )
-            r = w.run()
-            if r.clicked and r.text.strip():
-                key_input = r.text.strip()
-                # Step 1: Validate the key
+        if resp == _ALERT_OTHER:
+            webbrowser.open(WAITLIST_URL)
+            return
+        if resp != _ALERT_OK:
+            return
+        w = rumps.Window(
+            message="Paste your Pro license key:",
+            title="Activate FileDocket Pro",
+            default_text="",
+            dimensions=(360, 32)
+        )
+        r = w.run()
+        if not (r.clicked and r.text.strip()):
+            return
+        key_input = r.text.strip()
+        self._start_busy("Activating Pro…")
+        rumps.notification(APP_NAME, "Activating Pro",
+                           "Talking to Lemon Squeezy. Wait for the spinner to stop.")
+
+        def run():
+            try:
                 result = license_mod.validate_license_key(key_input)
                 if not result.get("valid"):
-                    rumps.alert(title="Activation Failed", message=result.get('error', 'Invalid key.'))
-                    return
-                # Step 2: Activate (consumes one slot on Lemon Squeezy)
-                act_result = license_mod.activate_license(key_input)
-                if act_result.get("activated"):
-                    rumps.alert(title="Pro Activated",
-                                message="FileDocket Pro is now active on this Mac.\n\n"
-                                        "You can deactivate from the Pro menu to free the slot.")
+                    out = {"activated": False, "error": result.get("error", "Invalid key.")}
+                else:
+                    out = license_mod.activate_license(key_input)
+            except Exception as e:
+                out = {"activated": False, "error": str(e)}
+
+            def done():
+                self._stop_busy()
+                if out.get("activated"):
+                    rumps.alert(
+                        title="Pro Activated",
+                        message="FileDocket Pro is now active on this Mac.\n\n"
+                                "You can deactivate from the Pro menu to free the slot."
+                    )
                     self._build_tools_menu()
                     self.refresh_folders_menu()
                     self.refresh_rules_menu()
                     self.get_pro_item.title = "Pro Active"
                 else:
-                    rumps.alert(title="Activation Failed",
-                                message=act_result.get('error', 'Could not activate.'))
+                    rumps.alert(
+                        title="Activation Failed",
+                        message=out.get("error", "Could not activate.")
+                    )
+            self._post_ui(done)
+
+        threading.Thread(target=run, daemon=True).start()
 
     def show_about(self, sender=None):
         pro_status = "Pro" if license_mod.is_pro() else "Free"
@@ -1004,9 +1051,7 @@ class FileDocketApp(rumps.App):
             ok="Copy Email",
             cancel="Close"
         )
-        if resp == 0:
-            # Copy email to clipboard
-            import subprocess
+        if resp == _ALERT_OK:
             subprocess.run(["pbcopy"], input=b"imulep2104@gmail.com")
 
     def quit_app(self, sender=None):
@@ -1155,7 +1200,7 @@ class FileDocketApp(rumps.App):
                            message="Move Installers/Archives older than 90 days "
                                    "into _Old_ folders? (Nothing is deleted.)",
                            ok="Archive", cancel="Cancel")
-        if not resp:
+        if resp != _ALERT_OK:
             return
         def run():
             try:
@@ -1211,7 +1256,7 @@ class FileDocketApp(rumps.App):
                            message="Match files by extension (e.g. iso) or by a "
                                    "word in the name?",
                            ok="By extension", cancel="By name")
-        match = "suffix" if kind else "keyword"
+        match = "suffix" if kind == _ALERT_OK else "keyword"
         label = "extension (type: iso, pdf, …)" if match == "suffix" \
             else "word in the name (e.g. invoice)"
         w1 = rumps.Window(message=f"Match on {label}",

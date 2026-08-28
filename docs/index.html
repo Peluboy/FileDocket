@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FileDocket — File Organizer for Mac and Windows</title>
+  <title>FileDocket: File Organizer for Mac and Windows</title>
   <meta name="description" content="Free file organizer for macOS and Windows. FileDocket lives in the menu bar or tray and sorts Downloads, Desktop, and any folder into Images, Documents, Video, and more. It only moves files. Every move can be undone.">
   <meta name="keywords" content="file organizer, downloads organizer, organize downloads folder, desktop file organizer, mac menu bar app, windows tray app, sort files by type, FileDocket">
   <meta name="robots" content="index, follow">
-  <meta property="og:title" content="FileDocket — File Organizer for Mac and Windows">
+  <meta property="og:title" content="FileDocket: File Organizer for Mac and Windows">
   <meta property="og:description" content="Sort Downloads, Desktop, and any folder. Menu bar on Mac, tray on Windows. Undo every move. Free, no account.">
   <meta property="og:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -17,7 +17,7 @@
   <meta property="og:url" content="https://peluboy.github.io/FileDocket/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_US">
-  <meta name="twitter:title" content="FileDocket — File Organizer for Mac and Windows">
+  <meta name="twitter:title" content="FileDocket: File Organizer for Mac and Windows">
   <meta name="twitter:description" content="Sort Downloads, Desktop, and any folder. Menu bar on Mac, tray on Windows. Undo every move.">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/peluboy/FileDocket/main/og-image.png">
   <meta property="og:site_name" content="FileDocket">
@@ -65,6 +65,10 @@
     html[data-tab="mac"] #panel-win { display: none !important; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    dialog {
+      margin: auto;
+    }
 
     html { scroll-behavior: smooth; }
 
@@ -242,7 +246,7 @@
       color: var(--line-2);
     }
 
-    /* Product frame — macOS desktop */
+    /* Product frame: macOS desktop */
     .hero-frame { width: 100%; max-width: none; }
     .frame {
       border: 1px solid var(--line);
@@ -362,10 +366,11 @@
       bottom: 86px;
       z-index: 2;
       display: flex;
-      align-items: center;
-      gap: 12px;
-      width: min(300px, 46%);
-      padding: 12px 14px;
+      align-items: flex-start;
+      gap: 10px;
+      width: max-content;
+      max-width: min(260px, calc(100% - 64px));
+      padding: 10px 12px;
       border-radius: 12px;
       background: rgba(28,28,30,0.72);
       backdrop-filter: blur(28px) saturate(1.5);
@@ -374,6 +379,7 @@
       color: #f2f2f2;
       font-size: 12px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      text-align: left;
       pointer-events: none;
       box-shadow: 0 16px 40px rgba(0,0,0,0.28);
       animation: toast-in 0.5s 0.35s ease-out both;
@@ -383,7 +389,9 @@
       height: 22px;
       flex-shrink: 0;
       color: var(--accent);
+      margin-top: 1px;
     }
+    .desk-toast > div { text-align: left; }
     .desk-toast strong { display: block; font-weight: 560; font-size: 13px; }
     .desk-toast span { display: block; margin-top: 2px; color: #b8b8b8; }
     @keyframes toast-in {
@@ -466,7 +474,7 @@
       max-width: 52ch; margin-bottom: 40px;
     }
 
-    /* Feature grid — no card chrome */
+    /* Feature grid: no card chrome */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -644,6 +652,100 @@
     .table-cta { padding-top: 20px; border-bottom: none; }
     .table-cta .btn { min-width: 120px; }
 
+    .waitlist-dialog {
+      position: fixed;
+      inset: 0;
+      width: min(420px, calc(100% - 32px));
+      height: fit-content;
+      max-height: calc(100% - 32px);
+      margin: auto;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0c0c0c;
+      color: var(--fg);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    }
+    .waitlist-dialog::backdrop {
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: blur(10px);
+    }
+    .waitlist-panel { padding: 28px 28px 32px; position: relative; }
+    .waitlist-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .waitlist-close:hover { color: var(--fg); background: #1a1a1a; }
+    .waitlist-kicker {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .waitlist-dialog h3 {
+      font-size: 22px;
+      font-weight: 560;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .waitlist-copy {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      margin-bottom: 22px;
+    }
+    .waitlist-form {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .waitlist-form input[type="email"] {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      background: #000;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--fg);
+      font: inherit;
+      font-size: 14px;
+    }
+    .waitlist-form input[type="email"]:focus {
+      outline: 1px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .waitlist-form .btn { height: 44px; width: 100%; }
+    .waitlist-form .btn[disabled] { opacity: 0.6; }
+    .waitlist-hp {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .waitlist-status {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+    .waitlist-status.is-ok { color: #7dcc9a; }
+    .waitlist-status.is-err { color: #e09090; }
+
     /* FAQ */
     details {
       border-bottom: 1px solid var(--line);
@@ -718,7 +820,7 @@
       .desk { height: 520px; }
       .menu { right: 8px; }
       .desk-icons { grid-template-columns: 72px; gap: 16px; left: 16px; top: 20px; }
-      .desk-toast { left: 16px; width: min(240px, 52%); }
+      .desk-toast { left: 16px; width: max-content; }
       .os-tabs { width: 100%; }
       .os-tab { flex: 1; min-width: 0; }
     }
@@ -749,9 +851,9 @@
     "description": "Free file organizer for macOS and Windows. Sorts Downloads, Desktop, and any folder into Images, Documents, Video, and more. It only moves files. Every move can be undone.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "macOS 12+, Windows 10+",
-    "softwareVersion": "1.2.2",
+    "softwareVersion": "1.2.3",
     "downloadUrl": [
-      "https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg",
+      "https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg",
       "https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe"
     ],
     "featureList": [
@@ -822,7 +924,7 @@
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#faq">FAQ</a></li>
         <li><a href="https://github.com/peluboy/FileDocket">GitHub</a></li>
-        <li><a class="btn btn-solid dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download</a></li>
+        <li><a class="btn btn-solid dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">Download</a></li>
         <li><a class="btn btn-solid dl-win" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download</a></li>
       </ul>
     </div>
@@ -833,9 +935,9 @@
       <div class="hero-copy">
         <p class="eyebrow">File organizer for Mac and Windows</p>
         <h1>Sort Downloads. Keep every file.</h1>
-        <p class="lede">FileDocket lives in the menu bar on Mac and the tray on Windows. It sorts Downloads, Desktop, and any folder you add — Images, Documents, Video, and the rest. It only moves files. Every move can be undone.</p>
+        <p class="lede">FileDocket lives in the menu bar on Mac and the tray on Windows. It sorts Downloads, Desktop, and any folder you add: Images, Documents, Video, and the rest. It only moves files. Every move can be undone.</p>
         <div class="cta-row">
-          <a class="btn btn-solid btn-lg dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
+          <a class="btn btn-solid btn-lg dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
           <a class="btn btn-solid btn-lg dl-win" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download for Windows</a>
           <a class="btn btn-ghost btn-lg" href="#how">Install options</a>
         </div>
@@ -871,7 +973,7 @@
           <div class="desk-toast" aria-hidden="true">
             <svg viewBox="0 0 764.84 584.85"><use href="#logo"/></svg>
             <div>
-              <strong>12 files organized</strong>
+              <strong>12 files organized 🎉 </strong>
               <span>Images · Documents · Video</span>
             </div>
           </div>
@@ -968,7 +1070,7 @@
               <div>
                 <h3>Download the DMG</h3>
                 <p>Open it, drag FileDocket into Applications, then open it from there. No Homebrew, no Terminal.</p>
-                <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
+                <a class="btn btn-solid" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
               </div>
             </div>
             <div class="howto-row">
@@ -1027,7 +1129,7 @@
       <div class="wrap">
         <p class="section-kicker">Pricing</p>
         <h2>Free core. Pro is $8 once.</h2>
-        <p class="section-lead">The organizer, background sorting, and undo are free. Pro unlocks the rest. No subscription.</p>
+        <p class="section-lead">The organizer, background sorting, and undo are free. Pro unlocks the rest. Checkout is not open yet.</p>
         <div class="table-wrap">
           <table>
             <thead>
@@ -1065,32 +1167,49 @@
               </tr>
               <tr>
                 <td>Duplicate Finder</td>
-                <td><span class="dash" aria-label="No">—</span></td>
+                <td><span class="dash" aria-label="No">-</span></td>
                 <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
               </tr>
               <tr>
                 <td>Deep Scan</td>
-                <td><span class="dash" aria-label="No">—</span></td>
+                <td><span class="dash" aria-label="No">-</span></td>
                 <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
               </tr>
               <tr>
                 <td>Archive old files</td>
-                <td><span class="dash" aria-label="No">—</span></td>
+                <td><span class="dash" aria-label="No">-</span></td>
                 <td><svg class="check" viewBox="0 0 14 14" aria-label="Yes"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 7.2 5.6 10.2 11.5 3.8"/></svg></td>
               </tr>
               <tr class="table-cta">
                 <td></td>
                 <td>
-                  <a class="btn btn-ghost dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download</a>
+                  <a class="btn btn-ghost dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">Download</a>
                   <a class="btn btn-ghost dl-win" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download</a>
                 </td>
-                <td><a class="btn btn-solid" href="https://peluboy.lemonsqueezy.com">Get Pro</a></td>
+                <td>
+                  <button class="btn btn-solid" type="button" data-waitlist-open>Go Pro</button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
+
+    <dialog class="waitlist-dialog" id="waitlist" aria-labelledby="waitlist-title">
+      <div class="waitlist-panel">
+        <button class="waitlist-close" type="button" data-waitlist-close aria-label="Close">&times;</button>
+        <p class="waitlist-kicker">Coming soon</p>
+        <h3 id="waitlist-title">Pro is $8 once.</h3>
+        <p class="waitlist-copy">Checkout is not open yet. Leave an email if you want one note when it is. No account, no feed.</p>
+        <form class="waitlist-form" id="waitlist-form" novalidate>
+          <label class="waitlist-hp" aria-hidden="true">Leave blank<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          <input type="email" name="email" id="waitlist-email" required placeholder="you@email.com" autocomplete="email" inputmode="email">
+          <button class="btn btn-solid" type="submit">Notify me</button>
+        </form>
+        <p class="waitlist-status" id="waitlist-status" role="status"></p>
+      </div>
+    </dialog>
 
     <section id="faq" class="reveal">
       <div class="wrap">
@@ -1116,7 +1235,7 @@
         </details>
         <details>
           <summary>Which folders does it organize?</summary>
-          <p>Downloads by default — it is a Downloads organizer first. Add Desktop, Documents, or any other folder in the app. Free includes one extra. Pro has no limit.</p>
+          <p>Downloads by default. It is a Downloads organizer first. Add Desktop, Documents, or any other folder in the app. Free includes one extra. Pro has no limit.</p>
         </details>
         <details>
           <summary>Can I install with Homebrew?</summary>
@@ -1128,15 +1247,19 @@
         </details>
         <details>
           <summary>It says brew: command not found</summary>
-          <p>That command is macOS only. If you are on Windows, <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. On a Mac, you do not need Homebrew: use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
+          <p>That command is macOS only. If you are on Windows, <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe">download the Setup exe</a>. On a Mac, you do not need Homebrew: use the one-line installer (it falls back to the DMG) or <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg">download the DMG</a>. If you ran <code>brew install</code> yourself, either Homebrew is not installed, or this Terminal session cannot see it yet. Open a new Terminal window, or run <code>eval "$(/opt/homebrew/bin/brew shellenv)"</code> on Apple Silicon (<code>/usr/local/bin/brew</code> on Intel).</p>
         </details>
         <details>
           <summary>How do I uninstall?</summary>
           <p>macOS: <code>curl -fsSL https://peluboy.github.io/FileDocket/uninstall.sh | bash</code>, or <code>brew uninstall --cask peluboy/tap/filedocket</code>, or drag FileDocket from Applications to Trash. Windows: Settings → Apps → FileDocket → Uninstall. Organized files are not deleted. Add brew <code>--zap</code> only on Macs that are not a FileDocket source checkout.</p>
         </details>
         <details>
+          <summary>When can I buy Pro?</summary>
+          <p>Pro is $8 one-time. Checkout is not open yet. Click Go Pro on the pricing table and leave an email if you want one note when it is. The free app is ready now: organizer, auto-organize, and undo. You can enter a license key in the app later, once checkout is live.</p>
+        </details>
+        <details>
           <summary>Does anything leave my computer?</summary>
-          <p>The FileDocket app does not send analytics. This website can measure visits and download clicks so we can see which installer people use. Pro payments are tracked only in Lemon Squeezy.</p>
+          <p>The FileDocket app does not send analytics. This website can measure visits and download clicks so we can see which installer people use. If you join the Pro waitlist, your email is stored so we can tell you when checkout opens. When Pro is live, payments will be handled only by Lemon Squeezy.</p>
         </details>
       </div>
     </section>
@@ -1146,7 +1269,7 @@
         <h2>Start with any messy folder.</h2>
         <p>Downloads, Desktop, or wherever files pile up. Free, about ten seconds to install.</p>
         <div class="cta-row">
-          <a class="btn btn-solid btn-lg dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
+          <a class="btn btn-solid btn-lg dl-mac" href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">Download for macOS</a>
           <a class="btn btn-solid btn-lg dl-win" href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Download for Windows</a>
           <a class="btn btn-ghost btn-lg" href="#how">Install options</a>
         </div>
@@ -1160,7 +1283,8 @@
       <nav>
         <a href="https://github.com/peluboy/FileDocket">Source</a>
         <a href="https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe" data-track="download" data-platform="win">Windows</a>
-        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg" data-track="download" data-platform="mac">macOS</a>
+        <a href="https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg" data-track="download" data-platform="mac">macOS</a>
+        <a href="#waitlist" data-waitlist-open>Pro waitlist</a>
         <a href="mailto:imulep2104@gmail.com">Support</a>
       </nav>
     </footer>
@@ -1168,8 +1292,14 @@
 
   <script>
     (function () {
-      // Pro checkout is not tracked here — Lemon Squeezy owns that.
+      // Pro checkout is not tracked here. Lemon Squeezy owns that.
       var GA_ID = "G-WQYFK0YVYD";
+      // Waitlist: paste one ID from Loops, Buttondown, or Kit. See docs/WAITLIST.md.
+      // Until then, signups go to FormSubmit (confirm the first mail at imulep2104@gmail.com).
+      var LOOPS_FORM_ID = "";
+      var BUTTONDOWN_USER = "";
+      var KIT_FORM_ID = "";
+      var WAITLIST_FALLBACK = "https://formsubmit.co/ajax/imulep2104@gmail.com";
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var os = document.documentElement.dataset.os === "win" ? "win" : "mac";
 
@@ -1265,6 +1395,147 @@
           });
         });
       });
+
+      (function setupWaitlist() {
+        var dialog = document.getElementById("waitlist");
+        var form = document.getElementById("waitlist-form");
+        var statusEl = document.getElementById("waitlist-status");
+        if (!dialog || !form || !statusEl) return;
+        var emailInput = form.querySelector('input[type="email"]');
+        var hp = form.querySelector('input[name="company"]');
+        var btn = form.querySelector('button[type="submit"]');
+        var lastTrigger = null;
+
+        function setStatus(msg, kind) {
+          statusEl.textContent = msg;
+          statusEl.classList.remove("is-ok", "is-err");
+          if (kind) statusEl.classList.add(kind);
+        }
+
+        function openWaitlist(trigger) {
+          lastTrigger = trigger || null;
+          setStatus("", "");
+          if (typeof dialog.showModal === "function") dialog.showModal();
+          else dialog.setAttribute("open", "");
+          fdTrack("waitlist_open");
+          if (emailInput) setTimeout(function () { emailInput.focus(); }, 30);
+        }
+
+        function closeWaitlist() {
+          if (dialog.open) dialog.close();
+          if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
+        }
+
+        document.addEventListener("click", function (e) {
+          var openBtn = e.target.closest("[data-waitlist-open]");
+          if (openBtn) {
+            e.preventDefault();
+            openWaitlist(openBtn);
+            return;
+          }
+          if (e.target.closest("[data-waitlist-close]")) {
+            e.preventDefault();
+            closeWaitlist();
+          }
+        });
+
+        dialog.addEventListener("click", function (e) {
+          if (e.target === dialog) closeWaitlist();
+        });
+
+        if (location.hash === "#waitlist") openWaitlist();
+        window.addEventListener("hashchange", function () {
+          if (location.hash === "#waitlist") openWaitlist();
+        });
+
+        dialog.addEventListener("close", function () {
+          if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
+        });
+
+        function provider() {
+          if (LOOPS_FORM_ID) {
+            return {
+              name: "loops",
+              url: "https://app.loops.so/api/newsletter-form/" + encodeURIComponent(LOOPS_FORM_ID),
+              body: function (email) {
+                return "email=" + encodeURIComponent(email) +
+                  "&userGroup=" + encodeURIComponent("Pro waitlist") +
+                  "&source=" + encodeURIComponent("FileDocket landing");
+              }
+            };
+          }
+          if (BUTTONDOWN_USER) {
+            return {
+              name: "buttondown",
+              url: "https://buttondown.com/api/emails/embed-subscribe/" + encodeURIComponent(BUTTONDOWN_USER),
+              body: function (email) {
+                return "email=" + encodeURIComponent(email);
+              }
+            };
+          }
+          if (KIT_FORM_ID) {
+            return {
+              name: "kit",
+              url: "https://app.convertkit.com/forms/" + encodeURIComponent(KIT_FORM_ID) + "/subscriptions",
+              body: function (email) {
+                return "email_address=" + encodeURIComponent(email);
+              }
+            };
+          }
+          return {
+            name: "formsubmit",
+            url: WAITLIST_FALLBACK,
+            json: true,
+            body: function (email) {
+              return JSON.stringify({
+                email: email,
+                _subject: "FileDocket Pro waitlist",
+                source: "FileDocket landing",
+                _template: "table",
+                _captcha: "false"
+              });
+            }
+          };
+        }
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var email = (emailInput && emailInput.value || "").trim();
+          if (hp && hp.value) {
+            setStatus("You are on the list. We will email you once when Pro checkout opens.", "is-ok");
+            form.reset();
+            return;
+          }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setStatus("Enter a valid email.", "is-err");
+            if (emailInput) emailInput.focus();
+            return;
+          }
+          var dest = provider();
+          btn.disabled = true;
+          setStatus("Saving…", "");
+          var headers = dest.json
+            ? { "Content-Type": "application/json", "Accept": "application/json" }
+            : { "Content-Type": "application/x-www-form-urlencoded" };
+          fetch(dest.url, { method: "POST", headers: headers, body: dest.body(email) })
+            .then(function (res) {
+              if (res.status === 429) throw new Error("Too many signups. Try again in a minute.");
+              return res.json().catch(function () { return { success: res.ok }; });
+            })
+            .then(function (data) {
+              var ok = data && (data.success === true || data.success === "true" || data.id || data.subscription);
+              if (data && data.success === false) throw new Error(data.message || "Could not save that email.");
+              if (!ok && dest.name !== "formsubmit") throw new Error((data && data.message) || "Could not save that email.");
+              fdTrack("waitlist_signup", { provider: dest.name });
+              setStatus("You are on the list. We will email you once when Pro checkout opens.", "is-ok");
+              form.reset();
+            })
+            .catch(function (err) {
+              setStatus(err.message || "Could not save that email. Try again.", "is-err");
+            })
+            .then(function () { btn.disabled = false; });
+        });
+      })();
 
       var tray = document.getElementById("tray-btn");
       var menu = document.getElementById("app-menu");

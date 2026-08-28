@@ -11,12 +11,14 @@ import os
 import subprocess
 import sys
 import threading
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 
 import organize_downloads
 
 APP_NAME = "FileDocket"
+WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
 TASK_NAME = "FileDocket"
 STATE_FILE = Path.home() / ".file-organizer" / "last_run.json"
 DOWNLOADS = Path.home() / "Downloads"
@@ -226,6 +228,9 @@ def start_tray() -> None:
     def on_quit(icon, _item) -> None:
         icon.stop()
 
+    def on_pro(icon, item):
+        webbrowser.open(WAITLIST_URL)
+
     def build_menu():
         auto_on = task_exists()
         login_on = launch_at_login()
@@ -239,6 +244,8 @@ def start_tray() -> None:
             Item("Open Downloads", on_downloads),
             Item("Add a folder…", on_add_folder),
             Item("Launch FileDocket at login", on_login, checked=lambda _: login_on),
+            pystray.Menu.SEPARATOR,
+            Item("Go Pro", on_pro),
             pystray.Menu.SEPARATOR,
             Item("Quit FileDocket", on_quit),
         )

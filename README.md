@@ -33,7 +33,7 @@ curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
 
 You do not need Homebrew. The Terminal command below is **macOS only**.
 
-**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.2/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
+**No Terminal:** [Download the DMG](https://github.com/Peluboy/homebrew-tap/raw/v1.2.3/FileDocket.dmg), drag FileDocket into Applications. If macOS blocks it, run `xattr -cr /Applications/FileDocket.app`.
 
 **One command** (uses Homebrew if `brew` is present, otherwise the DMG, then clears quarantine):
 
@@ -141,7 +141,11 @@ Pro unlocks power tools for a one-time $8 payment:
 - **Unlimited Folders**, Organize any number of folders, not just Downloads
 - **Archive Old Files**, Automatically move old installers and archives
 
-[Get Pro →](https://peluboy.lemonsqueezy.com)
+## Pro
+
+Pro unlocks Duplicate Finder, Deep Scan, unlimited rules and folders, and Archive Old Files for $8 once. Checkout is not open yet (the store is still under review).
+
+[Tell me when Pro is ready](https://peluboy.github.io/FileDocket/#waitlist)
 
 ## Building from Source
 
