@@ -56,6 +56,26 @@ If you already ran `brew tap peluboy/filedocket`, the installer untaps it. To do
 
 macOS 12+, Intel and Apple Silicon.
 
+### Update
+
+New features ship as a new version. Run the **same install command** again. Settings stay. Organized files are not touched.
+
+macOS:
+
+```bash
+curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash
+```
+
+Homebrew: `brew upgrade --cask peluboy/tap/filedocket`. Or download the latest DMG and replace FileDocket in Applications. In the app: **Check for updates**.
+
+Windows:
+
+```powershell
+irm https://peluboy.github.io/FileDocket/install.ps1 | iex
+```
+
+Or download the latest Setup.exe and run it over the old install. In the tray: **Check for updates**.
+
 ### Windows
 
 **No Terminal:** [Download FileDocket-Setup.exe](https://github.com/Peluboy/FileDocket/releases/download/windows-installer/FileDocket-Setup.exe). Double-click, Next, Finish. FileDocket appears in the notification area (show hidden icons if needed).

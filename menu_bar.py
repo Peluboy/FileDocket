@@ -15,6 +15,7 @@ APP_NAME = "FileDocket"
 APP_VERSION = "1.2.4"
 APP_AUTHOR = "Peluboy"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
+UPDATE_URL = "https://peluboy.github.io/FileDocket/#update"
 
 
 def _alert_choice(resp):
@@ -168,6 +169,7 @@ class FileDocketApp(rumps.App):
         self.launch_login_item = rumps.MenuItem("Launch FileDocket at login", callback=self.toggle_launch_login)
         self.welcome_item = rumps.MenuItem("Welcome Guide", callback=self.show_welcome)
         self.about_item = rumps.MenuItem("About FileDocket", callback=self.show_about)
+        self.update_item = rumps.MenuItem("Check for updates", callback=self.show_update)
         self.support_item = rumps.MenuItem("Support", callback=self.show_support)
         self.get_pro_item = rumps.MenuItem("Pro", callback=self.show_get_pro)
         _set_menu_icon(self.get_pro_item, "icon-pro-crown")
@@ -192,6 +194,7 @@ class FileDocketApp(rumps.App):
             rumps.separator,
             self.welcome_item,
             self.about_item,
+            self.update_item,
             self.support_item,
             rumps.separator,
             self.quit_item,
@@ -1047,8 +1050,24 @@ class FileDocketApp(rumps.App):
             message=f"A safe, tiny file organizer that lives in your menu bar.\n\n"
                     f"Developer: {APP_AUTHOR}\n"
                     f"License: {pro_status}\n"
-                    f"It only ever moves files, never deletes.",
+                    f"It only ever moves files, never deletes.\n\n"
+                    f"New features: Check for updates in this menu, "
+                    f"or run the same install command again.",
         )
+
+    def show_update(self, sender=None):
+        resp = rumps.alert(
+            title=f"Update FileDocket (now v{APP_VERSION})",
+            message="Run the same install command again. Settings stay. "
+                    "Organized files are not touched.\n\n"
+                    "curl -fsSL https://peluboy.github.io/FileDocket/install.sh | bash\n\n"
+                    "Homebrew: brew upgrade --cask peluboy/tap/filedocket\n\n"
+                    "Or download the latest DMG from the site.",
+            ok="Open site",
+            cancel="Close",
+        )
+        if _alert_choice(resp) == "ok":
+            webbrowser.open(UPDATE_URL)
 
     def show_support(self, sender=None):
         """Show support info for license issues and help."""

@@ -20,6 +20,7 @@ import organize_downloads
 APP_NAME = "FileDocket"
 APP_VERSION = "1.2.4"
 WAITLIST_URL = "https://peluboy.github.io/FileDocket/#waitlist"
+UPDATE_URL = "https://peluboy.github.io/FileDocket/#update"
 TASK_NAME = "FileDocket"
 STATE_FILE = Path.home() / ".file-organizer" / "last_run.json"
 DOWNLOADS = Path.home() / "Downloads"
@@ -232,6 +233,14 @@ def start_tray() -> None:
     def on_pro(icon, item):
         webbrowser.open(WAITLIST_URL)
 
+    def on_update(icon, item):
+        webbrowser.open(UPDATE_URL)
+        notify(
+            APP_NAME,
+            "Run the same install command again, or download the latest Setup.exe. "
+            "Settings stay.",
+        )
+
     def build_menu():
         auto_on = task_exists()
         login_on = launch_at_login()
@@ -248,6 +257,7 @@ def start_tray() -> None:
             Item("Launch FileDocket at login", on_login, checked=lambda _: login_on),
             pystray.Menu.SEPARATOR,
             Item("Go Pro", on_pro),
+            Item("Check for updates", on_update),
             pystray.Menu.SEPARATOR,
             Item("Quit FileDocket", on_quit),
         )

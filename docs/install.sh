@@ -63,3 +63,4 @@ fi
 echo "FileDocket is in Applications. Opening it now."
 open -a FileDocket || true
 echo "Look for the FileDocket icon in the menu bar."
+echo "To update later, run this command again, or: brew upgrade --cask peluboy/tap/filedocket"

@@ -121,4 +121,5 @@ if (-not $ok) {
 Write-Host "FileDocket is in $Dest. Opening it now."
 Start-Process $ExePath
 Write-Host "Look for the FileDocket icon in the notification area (show hidden icons if needed)."
+Write-Host "To update later, run this command again."
 Write-Host "Uninstall: irm https://peluboy.github.io/FileDocket/uninstall.ps1 | iex"
